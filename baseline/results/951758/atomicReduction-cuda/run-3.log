@@ -1,0 +1,63 @@
+Array size: 200 MB
+Repeat the kernel execution: 100 times
+Device name: Tesla V100-SXM2-32GB
+Thread block size: 128, The average performance of reduction is 690.755 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 128, The average performance of reduction is 845.521 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 128, The average performance of reduction is 850.69 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 128, The average performance of reduction is 834.299 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 128, The average performance of reduction is 722.367 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 702.896 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 836.464 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 863.54 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 846.104 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 728.311 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 752.64 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 825.973 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 850.981 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 787.078 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 686.959 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 770.627 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 848.954 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 848.148 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 827.979 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 588.284 GBytes/sec
+VERIFICATION: PASS
+

@@ -1,0 +1,5 @@
+Work-group size of kernel = 16 X 16
+Total reference execution time 0.241417 (s)
+Total kernel execution time 0.001183 (s)
+Device offloading time: 0.184 (s)
+PASS
