@@ -109,7 +109,12 @@ __global__ void cuThomasBatchPCR(const double *__restrict__ L,
 void launchThomasPCR(const double *L, const double *D, double *U, double *RHS,
                      int M, int BATCHCOUNT, size_t smem_bytes)
 {
-  cudaFuncSetAttribute((const void *)cuThomasBatchPCR,
+  // Take the kernel address through an explicitly-typed function pointer so the
+  // compiler resolves the single definition (avoids the "more than one instance
+  // of overloaded function" error when passing the bare __global__ name).
+  void (*kptr)(const double *, const double *, double *, double *, int, int) =
+      &cuThomasBatchPCR;
+  cudaFuncSetAttribute((const void *)kptr,
                        cudaFuncAttributeMaxDynamicSharedMemorySize,
                        (int)smem_bytes);
   cuThomasBatchPCR<<<BATCHCOUNT, M, smem_bytes>>>(L, D, U, RHS, M, BATCHCOUNT);
