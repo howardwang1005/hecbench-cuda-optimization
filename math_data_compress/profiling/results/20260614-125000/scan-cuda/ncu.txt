@@ -1,0 +1,379 @@
+==PROF== Connected to process 83541 (/home/u6721928/hecbench-cuda-optimization/math_data_compress/hecbench-src/src/scan-cuda/main)
+==PROF== Profiling "scan" - 0 (1/3): 0%....50%....100% - 19 passes
+==PROF== Profiling "scan" - 1 (2/3): 0%....50%....100% - 19 passes
+==PROF== Profiling "scan" - 2 (3/3): 0%....50%....100% - 19 passes
+
+The number of elements to scan in a thread block: 128
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+
+The number of elements to scan in a thread block: 128
+Element size in bytes is 1. Average execution time of scan (w/  bank conflicts): 3101.436035 (us)
+Element size in bytes is 1. Average execution time of scan (w/o bank conflicts): 3524.384766 (us). Reduce the time by -13.6%
+Element size in bytes is 2. Average execution time of scan (w/  bank conflicts): 4057.313477 (us)
+Element size in bytes is 2. Average execution time of scan (w/o bank conflicts): 3729.874756 (us). Reduce the time by 8.1%
+Element size in bytes is 4. Average execution time of scan (w/  bank conflicts): 4911.251953 (us)
+Element size in bytes is 4. Average execution time of scan (w/o bank conflicts): 3545.406494 (us). Reduce the time by 27.8%
+Element size in bytes is 8. Average execution time of scan (w/  bank conflicts): 7977.984863 (us)
+Element size in bytes is 8. Average execution time of scan (w/o bank conflicts): 6028.506836 (us). Reduce the time by 24.4%
+
+The number of elements to scan in a thread block: 256
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+
+The number of elements to scan in a thread block: 256
+Element size in bytes is 1. Average execution time of scan (w/  bank conflicts): 3582.150635 (us)
+Element size in bytes is 1. Average execution time of scan (w/o bank conflicts): 3361.848633 (us). Reduce the time by 6.1%
+Element size in bytes is 2. Average execution time of scan (w/  bank conflicts): 3768.081543 (us)
+Element size in bytes is 2. Average execution time of scan (w/o bank conflicts): 3531.592529 (us). Reduce the time by 6.3%
+Element size in bytes is 4. Average execution time of scan (w/  bank conflicts): 5027.092773 (us)
+Element size in bytes is 4. Average execution time of scan (w/o bank conflicts): 3240.017090 (us). Reduce the time by 35.5%
+Element size in bytes is 8. Average execution time of scan (w/  bank conflicts): 7970.071777 (us)
+Element size in bytes is 8. Average execution time of scan (w/o bank conflicts): 7935.630859 (us). Reduce the time by 0.4%
+
+The number of elements to scan in a thread block: 512
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+
+The number of elements to scan in a thread block: 512
+Element size in bytes is 1. Average execution time of scan (w/  bank conflicts): 3358.539795 (us)
+Element size in bytes is 1. Average execution time of scan (w/o bank conflicts): 3825.806641 (us). Reduce the time by -13.9%
+Element size in bytes is 2. Average execution time of scan (w/  bank conflicts): 3947.354492 (us)
+Element size in bytes is 2. Average execution time of scan (w/o bank conflicts): 3819.214355 (us). Reduce the time by 3.2%
+Element size in bytes is 4. Average execution time of scan (w/  bank conflicts): 5224.865723 (us)
+Element size in bytes is 4. Average execution time of scan (w/o bank conflicts): 3709.693848 (us). Reduce the time by 29.0%
+Element size in bytes is 8. Average execution time of scan (w/  bank conflicts): 8023.245605 (us)
+Element size in bytes is 8. Average execution time of scan (w/o bank conflicts): 6177.497070 (us). Reduce the time by 23.0%
+
+The number of elements to scan in a thread block: 1024
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+
+The number of elements to scan in a thread block: 1024
+Element size in bytes is 1. Average execution time of scan (w/  bank conflicts): 3618.115234 (us)
+Element size in bytes is 1. Average execution time of scan (w/o bank conflicts): 3990.031006 (us). Reduce the time by -10.3%
+Element size in bytes is 2. Average execution time of scan (w/  bank conflicts): 4201.644531 (us)
+Element size in bytes is 2. Average execution time of scan (w/o bank conflicts): 4172.562988 (us). Reduce the time by 0.7%
+Element size in bytes is 4. Average execution time of scan (w/  bank conflicts): 5624.008789 (us)
+Element size in bytes is 4. Average execution time of scan (w/o bank conflicts): 4049.670898 (us). Reduce the time by 28.0%
+Element size in bytes is 8. Average execution time of scan (w/  bank conflicts): 8193.537109 (us)
+Element size in bytes is 8. Average execution time of scan (w/o bank conflicts): 6433.890137 (us). Reduce the time by 21.5%
+
+The number of elements to scan in a thread block: 2048
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+PASS
+
+The number of elements to scan in a thread block: 2048
+Element size in bytes is 1. Average execution time of scan (w/  bank conflicts): 4029.189453 (us)
+Element size in bytes is 1. Average execution time of scan (w/o bank conflicts): 5151.942383 (us). Reduce the time by -27.9%
+Element size in bytes is 2. Average execution time of scan (w/  bank conflicts): 4680.651367 (us)
+Element size in bytes is 2. Average execution time of scan (w/o bank conflicts): 5396.877930 (us). Reduce the time by -15.3%
+Element size in bytes is 4. Average execution time of scan (w/  bank conflicts): 6111.146973 (us)
+Element size in bytes is 4. Average execution time of scan (w/o bank conflicts): 5610.606934 (us). Reduce the time by 8.2%
+Element size in bytes is 8. Average execution time of scan (w/  bank conflicts): 8871.398438 (us)
+Element size in bytes is 8. Average execution time of scan (w/o bank conflicts): 8023.526855 (us). Reduce the time by 9.6%
+==PROF== Disconnected from process 83541
+[83541] main@127.0.0.1
+  void scan<char, 128>(long, T1 *, const T1 *) (1280, 1, 1)x(64, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       885.80
+    SM Frequency                    Ghz         1.30
+    Elapsed Cycles                cycle      4731677
+    Memory Throughput                 %        86.64
+    DRAM Throughput                   %        18.14
+    Duration                         ms         3.65
+    L1/TEX Cache Throughput           %        86.96
+    L2 Cache Throughput               %        10.17
+    SM Active Cycles              cycle   4715183.56
+    Compute (SM) Throughput           %        77.55
+    ----------------------- ----------- ------------
+
+    INF   This workload is utilizing greater than 80.0% of the available compute or memory performance of the device.   
+          To further improve performance, work will likely need to be shifted from the most utilized to another unit.   
+          Start by analyzing L1 in the Memory Workload Analysis section.                                                
+
+    Section: Memory Workload Analysis
+    ----------------- ----------- ------------
+    Metric Name       Metric Unit Metric Value
+    ----------------- ----------- ------------
+    Memory Throughput     Gbyte/s       164.57
+    Mem Busy                    %        86.64
+    Max Bandwidth               %        62.04
+    L1/TEX Hit Rate             %        62.50
+    L2 Hit Rate                 %        69.16
+    Mem Pipes Busy              %        77.55
+    ----------------- ----------- ------------
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                    64
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                   1280
+    Registers Per Thread             register/thread              26
+    Shared Memory Configuration Size           Kbyte            8.19
+    Driver Shared Memory Per Block        byte/block               0
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block             128
+    # SMs                                         SM              80
+    Stack Size                                                  1024
+    Threads                                   thread           81920
+    # TPCs                                                        40
+    Enabled TPC IDs                                              all
+    Uses Green Context                                             0
+    Waves Per SM                                                0.50
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           32
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block           32
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        49.49
+    Achieved Active Warps Per SM           warp        31.67
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 50.51%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (49.5%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+    Section: GPU and Memory Workload Distribution
+    -------------------------- ----------- ------------
+    Metric Name                Metric Unit Metric Value
+    -------------------------- ----------- ------------
+    Average DRAM Active Cycles       cycle    586106.91
+    Total DRAM Elapsed Cycles        cycle    103374336
+    Average L1 Active Cycles         cycle   4715183.56
+    Total L1 Elapsed Cycles          cycle    378582664
+    Average L2 Active Cycles         cycle   4298824.88
+    Total L2 Elapsed Cycles          cycle    288826752
+    Average SM Active Cycles         cycle   4715183.56
+    Total SM Elapsed Cycles          cycle    378582664
+    Average SMSP Active Cycles       cycle   4699575.94
+    Total SMSP Elapsed Cycles        cycle   1514330656
+    -------------------------- ----------- ------------
+
+  void scan<char, 128>(long, T1 *, const T1 *) (1280, 1, 1)x(64, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       877.85
+    SM Frequency                    Ghz         1.30
+    Elapsed Cycles                cycle      4736773
+    Memory Throughput                 %        86.61
+    DRAM Throughput                   %        18.28
+    Duration                         ms         3.65
+    L1/TEX Cache Throughput           %        87.08
+    L2 Cache Throughput               %        10.16
+    SM Active Cycles              cycle   4708592.86
+    Compute (SM) Throughput           %        77.52
+    ----------------------- ----------- ------------
+
+    INF   This workload is utilizing greater than 80.0% of the available compute or memory performance of the device.   
+          To further improve performance, work will likely need to be shifted from the most utilized to another unit.   
+          Start by analyzing L1 in the Memory Workload Analysis section.                                                
+
+    Section: Memory Workload Analysis
+    ----------------- ----------- ------------
+    Metric Name       Metric Unit Metric Value
+    ----------------- ----------- ------------
+    Memory Throughput     Gbyte/s       164.37
+    Mem Busy                    %        86.61
+    Max Bandwidth               %        62.02
+    L1/TEX Hit Rate             %        62.50
+    L2 Hit Rate                 %        69.11
+    Mem Pipes Busy              %        77.52
+    ----------------- ----------- ------------
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                    64
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                   1280
+    Registers Per Thread             register/thread              26
+    Shared Memory Configuration Size           Kbyte            8.19
+    Driver Shared Memory Per Block        byte/block               0
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block             128
+    # SMs                                         SM              80
+    Stack Size                                                  1024
+    Threads                                   thread           81920
+    # TPCs                                                        40
+    Enabled TPC IDs                                              all
+    Uses Green Context                                             0
+    Waves Per SM                                                0.50
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           32
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block           32
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        49.58
+    Achieved Active Warps Per SM           warp        31.73
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 50.42%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (49.6%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+    Section: GPU and Memory Workload Distribution
+    -------------------------- ----------- ------------
+    Metric Name                Metric Unit Metric Value
+    -------------------------- ----------- ------------
+    Average DRAM Active Cycles       cycle    585992.47
+    Total DRAM Elapsed Cycles        cycle    102553600
+    Average L1 Active Cycles         cycle   4708592.86
+    Total L1 Elapsed Cycles          cycle    378729522
+    Average L2 Active Cycles         cycle   4303594.05
+    Total L2 Elapsed Cycles          cycle    289132800
+    Average SM Active Cycles         cycle   4708592.86
+    Total SM Elapsed Cycles          cycle    378729522
+    Average SMSP Active Cycles       cycle   4699483.35
+    Total SMSP Elapsed Cycles        cycle   1514918088
+    -------------------------- ----------- ------------
+
+  void scan<char, 128>(long, T1 *, const T1 *) (1280, 1, 1)x(64, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       883.84
+    SM Frequency                    Ghz         1.30
+    Elapsed Cycles                cycle      4735393
+    Memory Throughput                 %        85.81
+    DRAM Throughput                   %        18.18
+    Duration                         ms         3.65
+    L1/TEX Cache Throughput           %        86.94
+    L2 Cache Throughput               %        10.16
+    SM Active Cycles              cycle   4716317.96
+    Compute (SM) Throughput           %        76.81
+    ----------------------- ----------- ------------
+
+    INF   This workload is utilizing greater than 80.0% of the available compute or memory performance of the device.   
+          To further improve performance, work will likely need to be shifted from the most utilized to another unit.   
+          Start by analyzing L1 in the Memory Workload Analysis section.                                                
+
+    Section: Memory Workload Analysis
+    ----------------- ----------- ------------
+    Metric Name       Metric Unit Metric Value
+    ----------------- ----------- ------------
+    Memory Throughput     Gbyte/s       164.51
+    Mem Busy                    %        85.81
+    Max Bandwidth               %        61.45
+    L1/TEX Hit Rate             %        62.50
+    L2 Hit Rate                 %        69.16
+    Mem Pipes Busy              %        76.81
+    ----------------- ----------- ------------
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                    64
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                   1280
+    Registers Per Thread             register/thread              26
+    Shared Memory Configuration Size           Kbyte            8.19
+    Driver Shared Memory Per Block        byte/block               0
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block             128
+    # SMs                                         SM              80
+    Stack Size                                                  1024
+    Threads                                   thread           81920
+    # TPCs                                                        40
+    Enabled TPC IDs                                              all
+    Uses Green Context                                             0
+    Waves Per SM                                                0.50
+    -------------------------------- --------------- ---------------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           32
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block           32
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        49.47
+    Achieved Active Warps Per SM           warp        31.66
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 50.53%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (49.5%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+    Section: GPU and Memory Workload Distribution
+    -------------------------- ----------- ------------
+    Metric Name                Metric Unit Metric Value
+    -------------------------- ----------- ------------
+    Average DRAM Active Cycles       cycle    586332.56
+    Total DRAM Elapsed Cycles        cycle    103222272
+    Average L1 Active Cycles         cycle   4716317.96
+    Total L1 Elapsed Cycles          cycle    382254010
+    Average L2 Active Cycles         cycle   4300171.30
+    Total L2 Elapsed Cycles          cycle    289043392
+    Average SM Active Cycles         cycle   4716317.96
+    Total SM Elapsed Cycles          cycle    382254010
+    Average SMSP Active Cycles       cycle   4700294.39
+    Total SMSP Elapsed Cycles        cycle   1529016040
+    -------------------------- ----------- ------------
+
