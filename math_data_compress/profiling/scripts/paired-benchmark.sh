@@ -64,9 +64,11 @@ extract_bscan()   { grep "^Average execution time:" "$1" | grep -oE "[0-9.]+" \
 # scan: sum of all "w/ bank conflicts" timing lines (primary kernel), lower better
 extract_scan()    { grep "scan (w/  bank conflicts)" "$1" | grep -oE "[0-9.]+ \(us\)" \
                     | grep -oE "[0-9.]+" | awk '{s+=$1} END{printf "%.3f", s}'; }                   # us, lower
-# histogram: sum of the 3 "smem atomics" config times (us), lower better
-extract_histogram(){ grep "smem atomics" "$1" | grep -oE "^[ \t]*[0-9.]+" \
-                    | grep -oE "[0-9.]+" | awk '{s+=$1} END{printf "%.3f", s}'; }                   # us, lower
+# histogram: sum of the 3 "smem atomics" config times (us), lower better.
+# Lines look like "\t 35.909 smem atomics (...)"; awk's $1 grabs the leading
+# number and ignores leading tabs/spaces (portable; GNU grep -E does NOT treat
+# \t as a tab, which silently produced 0 before).
+extract_histogram(){ grep "smem atomics" "$1" | awk '{s+=$1} END{printf "%.3f", s}'; }              # us, lower
 # filter: the shared-memory variant time (ms), lower better
 extract_filter()  { grep "filter (shared memory)" "$1" | grep -oE "[0-9.]+" | head -1; }           # ms, lower
 # jacobi: average execution time per iteration (s, scientific notation), lower better
