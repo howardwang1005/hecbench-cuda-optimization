@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=paired-bench
+#SBATCH --account=ACD115083        # TWCC project (平行與分散式程式設計); required for billing
 #SBATCH --partition=gp1d           # same partition as the official baseline (job 951758)
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1               # one V100, like the official run
