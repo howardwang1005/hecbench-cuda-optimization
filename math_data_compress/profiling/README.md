@@ -51,8 +51,30 @@ Per benchmark it captures: `run.log` (authoritative timing), `nsys.txt` (which k
 
 Reorder the priority list in `template.md` using real launch-count + SOL data, then optimize highest-upside-first. Each optimized program goes under `optimized/<name>/` (same convention as the existing `optimized/` dir), and we compare baseline-vs-optimized on the same V100 with identical args. Pre-profiling guess: **gaussian** and **jacobi** have the most headroom (launch-overhead pattern, like the 5.43x Floyd-Warshall win); the bandwidth-bound ones (histogram/filter/atomicReduction) have little honest headroom.
 
+## Step 4 — measure speedup (baseline vs optimized)
+
+After optimizing, run the paired benchmark on the same V100. It builds the baseline and
+optimized version of each of the 5 kernels, runs both with identical args (`REPEAT` times,
+medians reported), checks correctness, and prints a speedup table:
+
+```bash
+ARCH=sm_70 bash math_data_compress/profiling/scripts/paired-benchmark.sh
+# subset / more repeats:  ONLY="thomas gaussian" REPEAT=5 bash .../paired-benchmark.sh
+```
+
+Output (per run, under `paired/<ts>/`): per-benchmark `baseline.log` / `optimized.log`
+(+ each repeat), a `summary.csv`, and a printed table of baseline time, optimized time,
+speedup, and correctness for thomas / gaussian / jaccard / bscan / scan. Fill the measured
+speedups into each `optimization/<name>/CHANGES.md` §5.
+
+> jaccard's built-in check only runs under `-DDEBUG`; to gate its correctness, rebuild
+> both with `EXTRA_CFLAGS=-DDEBUG` and confirm `PASS`, then benchmark without it.
+
 ## Files
 - `scripts/env-probe.sh` — toolchain detection
 - `scripts/profile-all.sh` — build + run + profile all 9
+- `scripts/paired-benchmark.sh` — baseline vs optimized speedup for the 5 optimized kernels
 - `analysis/template.md` — per-benchmark bottleneck hypotheses + metrics to check
-- `analysis/env.txt`, `results/<ts>/` — produced on the V100, sent back
+- `analysis/results-20260614.md` — filled-in bottleneck analysis from the V100 profiling run
+- `optimization/<name>/` — per-benchmark change records (CHANGES.md, patch, CPU test)
+- `analysis/env.txt`, `results/<ts>/`, `paired/<ts>/` — produced on the V100

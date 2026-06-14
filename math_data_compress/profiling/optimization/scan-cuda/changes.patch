@@ -1,0 +1,42 @@
+--- a/scan-cuda/main.cu
++++ b/scan-cuda/main.cu
+@@ -176,9 +176,29 @@
+ 
+   cudaDeviceProp prop;
+   cudaGetDeviceProperties(&prop, 0);
+-  dim3 grids (16 * prop.multiProcessorCount);
++  const int sm = prop.multiProcessorCount;
+   dim3 blocks (N/2);
++
++  // The kernels grid-stride over `num_blocks` logical blocks, so the physical
++  // grid only needs to fill the device. The baseline launched a fixed 16*SM
++  // blocks; profiling (ncu) showed that for N=128 this is only 1280 blocks vs
++  // 32 blocks/SM * 80 SMs = 2560 slots -> Waves Per SM = 0.5, Achieved Occupancy
++  // 49% despite 100% theoretical. We instead size the grid to the kernel's own
++  // max active blocks per SM (per type T and N), so every block slot is filled.
++  auto fill_grid = [&](auto kernel) -> int {
++    int maxBlocksPerSM = 0;
++    // templated overload deduces the kernel's argument types from the pointer
++    cudaOccupancyMaxActiveBlocksPerMultiprocessor(
++        &maxBlocksPerSM, kernel, N/2, /*dynamic smem*/0);
++    if (maxBlocksPerSM < 1) maxBlocksPerSM = 1;
++    int64_t g = (int64_t)maxBlocksPerSM * sm;
++    if (g > num_blocks) g = num_blocks;   // don't launch more than there is work
++    return (int)g;
++  };
+ 
++  dim3 grids      (fill_grid(scan<T, N>));
++  dim3 grids_bcao (fill_grid(scan_bcao<T, N>));
++
+   cudaDeviceSynchronize();
+   auto start = std::chrono::steady_clock::now();
+ 
+@@ -200,7 +220,7 @@
+   start = std::chrono::steady_clock::now();
+ 
+   for (int i = 0; i < repeat; i++) {
+-    scan_bcao<T, N><<<grids, blocks>>>(num_blocks, d_out, d_in);
++    scan_bcao<T, N><<<grids_bcao, blocks>>>(num_blocks, d_out, d_in);
+   }
+ 
+   cudaDeviceSynchronize();
