@@ -1,0 +1,24 @@
+Block size = 32, ratio of valid elements = 0.490625, verify = PASS
+Average execution time: 190.583309 (us)
+Billion elements per second: 10.154930
+
+Block size = 64, ratio of valid elements = 0.507812, verify = PASS
+Average execution time: 342.768316 (us)
+Billion elements per second: 11.292526
+
+Block size = 128, ratio of valid elements = 0.510156, verify = PASS
+Average execution time: 342.684816 (us)
+Billion elements per second: 22.590556
+
+Block size = 256, ratio of valid elements = 0.504297, verify = PASS
+Average execution time: 677.298832 (us)
+Billion elements per second: 22.859748
+
+Block size = 512, ratio of valid elements = 0.504492, verify = PASS
+Average execution time: 677.924932 (us)
+Billion elements per second: 45.677272
+
+Block size = 1024, ratio of valid elements = 0.498242, verify = PASS
+Average execution time: 677.720032 (us)
+Billion elements per second: 91.382164
+
