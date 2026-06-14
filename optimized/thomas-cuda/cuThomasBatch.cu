@@ -104,16 +104,6 @@ __global__ void cuThomasBatchPCR(const double *__restrict__ L,
   RHS[gi] = sr[i] / sd[i];
 }
 
-// Host launcher in the same TU as the kernel. With 6*M doubles (<=48KB at
-// M=1024) the kernel fits the default shared-memory limit, so we neither set a
-// shared-memory attribute nor take the kernel's address (both of which caused
-// link/overload errors). Just a plain dynamic-shared-memory launch.
-void launchThomasPCR(const double *L, const double *D, double *U, double *RHS,
-                     int M, int BATCHCOUNT, size_t smem_bytes)
-{
-  cuThomasBatchPCR<<<BATCHCOUNT, M, smem_bytes>>>(L, D, U, RHS, M, BATCHCOUNT);
-}
-
 // Compatibility wrapper keeping the original name/signature so callers that
 // still launch "cuThomasBatch" work. main.cu launches cuThomasBatchPCR directly
 // with one block per system and the shared-memory size; this wrapper is only a

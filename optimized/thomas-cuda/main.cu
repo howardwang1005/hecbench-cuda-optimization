@@ -182,7 +182,10 @@ int main(int argc, char const *argv[])
   start = std::chrono::steady_clock::now();
 
   for (int n = 0; n < repeat; n++) {
-    launchThomasPCR(l_device, d_device, u_device, rhs_device, M, N, pcr_smem);
+    // Launch directly from main.cu (the same pattern the baseline uses for
+    // cuThomasBatch): kernel defined in cuThomasBatch.cu, launched here via the
+    // header declaration. 6*M doubles <= 48KB so no smem opt-in is needed.
+    cuThomasBatchPCR<<<N, M, pcr_smem>>>(l_device, d_device, u_device, rhs_device, M, N);
   }
 
   cudaDeviceSynchronize();
