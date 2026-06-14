@@ -23,7 +23,7 @@ BASE="${BASE:-math_data_compress/hecbench-src/src}"
 OPT="${OPT:-optimized}"
 OUT="${OUT:-math_data_compress/profiling/paired/$(date +%Y%m%d-%H%M%S)}"
 REPEAT="${REPEAT:-3}"
-ONLY="${ONLY:-thomas gaussian jaccard bscan scan}"
+ONLY="${ONLY:-thomas gaussian jaccard bscan scan histogram filter jacobi}"
 
 # name | dir-suffix | run args   (args match the profiling run exactly)
 read -r -d '' BENCHES <<'EOF'
@@ -32,6 +32,9 @@ gaussian  gaussian-cuda  -q -t -s 4096
 jaccard   jaccard-cuda   1024 512 1000
 bscan     bscan-cuda     1000
 scan      scan-cuda      268435456 100
+histogram histogram-cuda --i=100
+filter    filter-cuda    100000000 256 100
+jacobi    jacobi-cuda
 EOF
 
 mkdir -p "$OUT"
@@ -61,6 +64,13 @@ extract_bscan()   { grep "^Average execution time:" "$1" | grep -oE "[0-9.]+" \
 # scan: sum of all "w/ bank conflicts" timing lines (primary kernel), lower better
 extract_scan()    { grep "scan (w/  bank conflicts)" "$1" | grep -oE "[0-9.]+ \(us\)" \
                     | grep -oE "[0-9.]+" | awk '{s+=$1} END{printf "%.3f", s}'; }                   # us, lower
+# histogram: sum of the 3 "smem atomics" config times (us), lower better
+extract_histogram(){ grep "smem atomics" "$1" | grep -oE "^[ \t]*[0-9.]+" \
+                    | grep -oE "[0-9.]+" | awk '{s+=$1} END{printf "%.3f", s}'; }                   # us, lower
+# filter: the shared-memory variant time (ms), lower better
+extract_filter()  { grep "filter (shared memory)" "$1" | grep -oE "[0-9.]+" | head -1; }           # ms, lower
+# jacobi: average execution time per iteration (s, scientific notation), lower better
+extract_jacobi()  { grep "Average execution time per iteration" "$1" | sed -E 's/.*: *([0-9.eE+-]+) *\(s\).*/\1/'; }  # s, lower
 
 # correctness gate per benchmark (echo PASS/FAIL/UNKNOWN)
 check_thomas()  { local e; e=$(grep "Maximum error" "$1" | grep -oE "[0-9.eE+-]+" | head -1); awk -v e="$e" 'BEGIN{print (e=="")?"UNKNOWN":((e+0<1e-6)?"PASS":"FAIL")}'; }
@@ -68,8 +78,11 @@ check_gaussian(){ grep -q "^PASS" "$1" && echo PASS || echo FAIL; }
 check_jaccard() { echo "UNKNOWN(needs -DDEBUG)"; }   # default build has no verify
 check_bscan()   { grep -q "verify = FAIL" "$1" && echo FAIL || (grep -q "verify = PASS" "$1" && echo PASS || echo UNKNOWN); }
 check_scan()    { grep -q "FAIL" "$1" && echo FAIL || (grep -q "PASS" "$1" && echo PASS || echo UNKNOWN); }
+check_histogram(){ grep -q "FAIL" "$1" && echo FAIL || (grep -q "PASS" "$1" && echo PASS || echo UNKNOWN); }
+check_filter()  { grep -q "FAIL" "$1" && echo FAIL || (grep -q "PASS" "$1" && echo PASS || echo UNKNOWN); }
+check_jacobi()  { grep -q "FAIL" "$1" && echo FAIL || (grep -q "PASS" "$1" && echo PASS || echo UNKNOWN); }
 
-unit_of()  { case "$1" in thomas) echo ms;; gaussian|bscan|scan) echo us;; jaccard) echo s;; esac; }
+unit_of()  { case "$1" in thomas|filter) echo ms;; gaussian|bscan|scan|histogram) echo us;; jaccard|jacobi) echo s;; esac; }
 
 # Official HeCBench baseline medians (baseline/results/951758/summary), in the
 # SAME unit/aggregation each extractor produces, so optimized can be compared to
@@ -81,12 +94,15 @@ unit_of()  { case "$1" in thomas) echo ms;; gaussian|bscan|scan) echo us;; jacca
 #   scan: sum of 20 with-conflicts timings (us)
 official_of() {
   case "$1" in
-    thomas)   echo 2.352232 ;;
-    gaussian) echo 490962 ;;
-    jaccard)  echo 0.01229218 ;;
-    bscan)    echo 2884.6 ;;
-    scan)     echo 107187.2 ;;
-    *)        echo NA ;;
+    thomas)    echo 2.352232 ;;
+    gaussian)  echo 490962 ;;
+    jaccard)   echo 0.01229218 ;;
+    bscan)     echo 2884.6 ;;
+    scan)      echo 107187.2 ;;
+    histogram) echo 184.4 ;;       # us, sum of 3 smem-atomics configs
+    filter)    echo 0.958458 ;;    # ms, shared-memory variant
+    jacobi)    echo 0.0000738951 ;; # s, per-iteration (0.0738951 ms)
+    *)         echo NA ;;
   esac
 }
 
