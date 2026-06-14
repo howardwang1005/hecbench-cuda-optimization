@@ -1,0 +1,32 @@
+==2003520== NVPROF is profiling process 2003520, command: /home/r14922146/src/convolution3D-cuda/main 32 1 6 32 32 5 2
+==2003520== Profiling application: /home/r14922146/src/convolution3D-cuda/main 32 1 6 32 32 5 2
+3D convolution (FP32)
+
+========== Warmup start ==========
+input dimensions: C=1 Win=32 Hin=32
+output dimensions: M=6 Wout=28 Hout=28
+3D grid dimensions: N=32 M=6 Z=4
+Average kernel execution time of conv3d_s1 kernel: 13.826356 (us)
+PASS
+Average kernel execution time of conv3d_s2 kernel: 9.735973 (us)
+PASS
+Average kernel execution time of conv3d_s3 kernel: 9.782651 (us)
+PASS
+
+========== Warmup done ==========
+input dimensions: C=1 Win=32 Hin=32
+output dimensions: M=6 Wout=28 Hout=28
+3D grid dimensions: N=32 M=6 Z=4
+Average kernel execution time of conv3d_s1 kernel: 16.565001 (us)
+PASS
+Average kernel execution time of conv3d_s2 kernel: 15.269001 (us)
+PASS
+Average kernel execution time of conv3d_s3 kernel: 15.249500 (us)
+PASS
+==2003520== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   33.27%  8.8893ms      1002  8.8710us  8.4160us  9.5680us  void conv3d_s3<float>(float const *, float const *, float*, int, int, int, int, int, int, int, int)
+                   33.04%  8.8282ms      1002  8.8100us  8.5120us  9.1840us  void conv3d_s2<float>(float const *, float const *, float*, int, int, int, int, int, int, int, int)
+                   32.10%  8.5784ms      1002  8.5610us  8.4470us  9.8880us  void conv3d_s1<float>(float const *, float const *, float*, int, int, int, int, int, int, int, int)
+                    1.05%  280.96us         6  46.826us  46.687us  47.008us  [CUDA memcpy DtoH]
+                    0.54%  144.86us         6  24.143us  1.0880us  56.831us  [CUDA memcpy HtoD]

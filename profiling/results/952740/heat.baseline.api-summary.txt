@@ -1,0 +1,46 @@
+==3416791== NVPROF is profiling process 3416791, command: /home/r14922146/src/heat-cuda/main 4096 100
+
+ MMS heat equation
+
+--------------------
+Problem input
+
+ Grid size: 4096 x 4096
+ Cell width: 0.244081
+ Grid length: 1000x1000
+
+ Alpha: 0.1
+
+ Steps: 100
+ Total time: 0.5
+ Time step: 0.005
+ GPU device: Tesla V100-SXM2-32GB
+--------------------
+Stability
+
+ r value: 0.0083927
+--------------------
+Results
+
+Error (L2norm): 4.98288e-10
+Solve time (s): 0.0341359
+Total time (s): 0.787627
+Bandwidth (GB/s): 786.372
+--------------------
+==3416791== Profiling application: /home/r14922146/src/heat-cuda/main 4096 100
+==3416791== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   54.48%  101.21ms         2  50.607ms  178.04us  101.04ms  cudaMalloc
+                   25.76%  47.852ms         1  47.852ms  47.852ms  47.852ms  cudaMemcpy
+                   18.48%  34.326ms         2  17.163ms  506.18us  33.820ms  cudaDeviceSynchronize
+                    0.36%  674.96us       102  6.6170us  2.5900us  376.12us  cudaLaunchKernel
+                    0.36%  662.64us       114  5.8120us      71ns  416.67us  cuDeviceGetAttribute
+                    0.34%  634.42us         2  317.21us  241.33us  393.09us  cudaFree
+                    0.20%  379.94us         1  379.94us  379.94us  379.94us  cudaGetDeviceProperties
+                    0.01%  20.201us         1  20.201us  20.201us  20.201us  cuDeviceGetName
+                    0.01%  14.776us         1  14.776us  14.776us  14.776us  cuDeviceGetPCIBusId
+                    0.00%  1.1910us         3     397ns      86ns     986ns  cuDeviceGetCount
+                    0.00%     509ns         2     254ns      84ns     425ns  cuDeviceGet
+                    0.00%     472ns         1     472ns     472ns     472ns  cuDeviceTotalMem
+                    0.00%     374ns         1     374ns     374ns     374ns  cuDeviceGetUuid
+                    0.00%     186ns         1     186ns     186ns     186ns  cuModuleGetLoadingMode

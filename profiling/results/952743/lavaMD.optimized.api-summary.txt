@@ -1,0 +1,23 @@
+==3430092== NVPROF is profiling process 3430092, command: /home/r14922146/hecbench-cuda-optimization/optimized/lavaMD-cuda/main -boxes1d 30
+WG size of kernel = 128 
+Configuration used: arch = 0, cores = 1, boxes1d = 30
+Device offloading time:
+0.340397294000 s
+Kernel execution time:
+0.034031220000 s
+==3430092== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/lavaMD-cuda/main -boxes1d 30
+==3430092== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   60.11%  103.08ms         4  25.771ms  137.50us  102.64ms  cudaMalloc
+                   19.73%  33.834ms         2  16.917ms  69.167us  33.765ms  cudaDeviceSynchronize
+                   19.22%  32.957ms         5  6.5913ms  2.2949ms  9.0321ms  cudaMemcpy
+                    0.51%  883.07us         4  220.77us  166.32us  361.44us  cudaFree
+                    0.25%  429.59us       114  3.7680us      67ns  201.45us  cuDeviceGetAttribute
+                    0.15%  263.69us         1  263.69us  263.69us  263.69us  cudaLaunchKernel
+                    0.02%  33.487us         1  33.487us  33.487us  33.487us  cuDeviceGetName
+                    0.01%  13.047us         1  13.047us  13.047us  13.047us  cuDeviceGetPCIBusId
+                    0.00%  1.1680us         3     389ns      62ns  1.0360us  cuDeviceGetCount
+                    0.00%     352ns         2     176ns      87ns     265ns  cuDeviceGet
+                    0.00%     290ns         1     290ns     290ns     290ns  cuDeviceTotalMem
+                    0.00%     245ns         1     245ns     245ns     245ns  cuModuleGetLoadingMode
+                    0.00%     128ns         1     128ns     128ns     128ns  cuDeviceGetUuid

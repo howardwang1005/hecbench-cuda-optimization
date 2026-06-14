@@ -1,0 +1,366 @@
+==PROF== Connected to process 3473683 (/home/r14922146/hecbench-cuda-optimization/optimized/srad-cuda/main)
+==PROF== Profiling "extract(long, float *)" - 0 (1/8): 0%....50%....100% - 19 passes
+==PROF== Profiling "prepare" - 1 (2/8): 0%....50%....100% - 19 passes
+==PROF== Profiling "reduce" - 2 (3/8): 0%....50%....100% - 19 passes
+==PROF== Profiling "reduce" - 3 (4/8): 0%....50%....100% - 19 passes
+==PROF== Profiling "reduce" - 4 (5/8): 0%....50%....100% - 19 passes
+==PROF== Profiling "srad" - 5 (6/8): 0%....50%....100% - 19 passes
+==PROF== Profiling "srad2" - 6 (7/8): 0%....50%....100% - 19 passes
+==PROF== Profiling "prepare" - 7 (8/8): 0%....50%....100% - 19 passes
+Time spent in different stages of the application:
+ 0.000000070000 s,  0.000002635798 % : SETUP VARIABLES
+ 0.000007025000 s,  0.000264521181 % : READ COMMAND LINE PARAMETERS
+ 0.015212371000 s,  0.572810583063 % : READ IMAGE FROM FILE
+ 0.000582527000 s,  0.021934623506 % : RESIZE IMAGE
+ 0.489034968000 s, 18.414250162472 % : GPU DRIVER INIT, CPU/GPU SETUP, MEMORY ALLOCATION
+ 0.000205261000 s,  0.007728951200 % : COPY DATA TO CPU->GPU
+ 0.740582394000 s, 27.886082512281 % : EXTRACT IMAGE
+ 1.388772447000 s, 52.293199732512 % : COMPUTE (1000 iterations)
+ 0.000137372000 s,  0.005172641097 % : COMPRESS IMAGE
+ 0.000276317000 s,  0.010404512346 % : COPY DATA TO GPU->CPU
+ 0.019929282000 s,  0.750422379421 % : SAVE IMAGE INTO FILE
+ 0.001001925000 s,  0.037726745123 % : FREE MEMORY
+Total time:
+2.655741959000 s
+==PROF== Disconnected from process 3473683
+[3473683] main@127.0.0.1
+  extract(long, float *) (899, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       871.75
+    SM Frequency                    Ghz         1.28
+    Elapsed Cycles                cycle        6,314
+    Memory Throughput                 %        20.94
+    DRAM Throughput                   %        20.94
+    Duration                         us         4.93
+    L1/TEX Cache Throughput           %        15.54
+    L2 Cache Throughput               %        15.17
+    SM Active Cycles              cycle     3,748.44
+    Compute (SM) Throughput           %        14.80
+    ----------------------- ----------- ------------
+
+    OPT   This workload exhibits low compute throughput and memory bandwidth utilization relative to the peak           
+          performance of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak           
+          typically indicate latency issues. Look at Scheduler Statistics and Warp State Statistics for potential       
+          reasons.                                                                                                      
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        60.22
+    Achieved Active Warps Per SM           warp        38.54
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 39.78%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (60.2%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+  prepare(long, const float *, float *, float *) (899, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       873.41
+    SM Frequency                    Ghz         1.27
+    Elapsed Cycles                cycle        6,415
+    Memory Throughput                 %        22.30
+    DRAM Throughput                   %        20.49
+    Duration                         us         5.02
+    L1/TEX Cache Throughput           %        25.84
+    L2 Cache Throughput               %        22.30
+    SM Active Cycles              cycle     3,965.43
+    Compute (SM) Throughput           %         9.06
+    ----------------------- ----------- ------------
+
+    OPT   This workload exhibits low compute throughput and memory bandwidth utilization relative to the peak           
+          performance of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak           
+          typically indicate latency issues. Look at Scheduler Statistics and Warp State Statistics for potential       
+          reasons.                                                                                                      
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        60.52
+    Achieved Active Warps Per SM           warp        38.73
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 39.48%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (60.5%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+  reduce(long, int, int, float *, float *) (899, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       875.82
+    SM Frequency                    Ghz         1.28
+    Elapsed Cycles                cycle       12,561
+    Memory Throughput                 %        41.93
+    DRAM Throughput                   %        21.02
+    Duration                         us         9.79
+    L1/TEX Cache Throughput           %        61.00
+    L2 Cache Throughput               %         8.00
+    SM Active Cycles              cycle     8,536.06
+    Compute (SM) Throughput           %        45.94
+    ----------------------- ----------- ------------
+
+    OPT   This workload exhibits low compute throughput and memory bandwidth utilization relative to the peak           
+          performance of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak           
+          typically indicate latency issues. Look at Scheduler Statistics and Warp State Statistics for potential       
+          reasons.                                                                                                      
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block            8
+    Block Limit Shared Mem                block            8
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        73.82
+    Achieved Active Warps Per SM           warp        47.25
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 26.18%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (73.8%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+  reduce(long, int, int, float *, float *) (4, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       871.00
+    SM Frequency                    Ghz         1.29
+    Elapsed Cycles                cycle        9,043
+    Memory Throughput                 %         1.94
+    DRAM Throughput                   %         1.94
+    Duration                         us         7.01
+    L1/TEX Cache Throughput           %        18.30
+    L2 Cache Throughput               %         0.69
+    SM Active Cycles              cycle       232.66
+    Compute (SM) Throughput           %         0.26
+    ----------------------- ----------- ------------
+
+    OPT   This kernel grid is too small to fill the available resources on this device, resulting in only 0.0 full      
+          waves across all SMs. Look at Launch Statistics for more details.                                             
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block            8
+    Block Limit Shared Mem                block            8
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        11.75
+    Achieved Active Warps Per SM           warp         7.52
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 88.25%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (11.7%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+  reduce(long, int, int, float *, float *) (1, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       871.24
+    SM Frequency                    Ghz         1.28
+    Elapsed Cycles                cycle        5,487
+    Memory Throughput                 %         0.15
+    DRAM Throughput                   %         0.12
+    Duration                         us         4.26
+    L1/TEX Cache Throughput           %        12.21
+    L2 Cache Throughput               %         0.15
+    SM Active Cycles              cycle        49.44
+    Compute (SM) Throughput           %         0.06
+    ----------------------- ----------- ------------
+
+    OPT   This kernel grid is too small to fill the available resources on this device, resulting in only 0.0 full      
+          waves across all SMs. Look at Launch Statistics for more details.                                             
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block            8
+    Block Limit Shared Mem                block            8
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        11.13
+    Achieved Active Warps Per SM           warp         7.13
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 88.87%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (11.1%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+  srad(float, int, int, long, const int *, const int *, const int *, const int *, float *, float *, float *, float *, float, float *, const float *) (899, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       875.39
+    SM Frequency                    Ghz         1.26
+    Elapsed Cycles                cycle       12,893
+    Memory Throughput                 %        31.71
+    DRAM Throughput                   %        26.24
+    Duration                         us        10.14
+    L1/TEX Cache Throughput           %        38.82
+    L2 Cache Throughput               %        31.71
+    SM Active Cycles              cycle     9,194.88
+    Compute (SM) Throughput           %        30.69
+    ----------------------- ----------- ------------
+
+    OPT   This workload exhibits low compute throughput and memory bandwidth utilization relative to the peak           
+          performance of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak           
+          typically indicate latency issues. Look at Scheduler Statistics and Warp State Statistics for potential       
+          reasons.                                                                                                      
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           10
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        69.78
+    Achieved Active Warps Per SM           warp        44.66
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 30.22%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (69.8%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+  srad2(float, int, int, long, const int *, const int *, const int *, const int *, const float *, const float *, const float *, const float *, const float *, float *) (899, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       876.10
+    SM Frequency                    Ghz         1.27
+    Elapsed Cycles                cycle       13,995
+    Memory Throughput                 %        56.27
+    DRAM Throughput                   %        56.27
+    Duration                         us        10.94
+    L1/TEX Cache Throughput           %        26.02
+    L2 Cache Throughput               %        28.08
+    SM Active Cycles              cycle    10,030.55
+    Compute (SM) Throughput           %        15.13
+    ----------------------- ----------- ------------
+
+    OPT   This workload exhibits low compute throughput and memory bandwidth utilization relative to the peak           
+          performance of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak           
+          typically indicate latency issues. Look at Scheduler Statistics and Warp State Statistics for potential       
+          reasons.                                                                                                      
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           10
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        78.48
+    Achieved Active Warps Per SM           warp        50.23
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 21.52%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (78.5%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+
+  prepare(long, const float *, float *, float *) (899, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       865.85
+    SM Frequency                    Ghz         1.26
+    Elapsed Cycles                cycle        6,653
+    Memory Throughput                 %        21.50
+    DRAM Throughput                   %        19.79
+    Duration                         us         5.25
+    L1/TEX Cache Throughput           %        27.35
+    L2 Cache Throughput               %        21.50
+    SM Active Cycles              cycle     3,732.85
+    Compute (SM) Throughput           %         9.58
+    ----------------------- ----------- ------------
+
+    OPT   This workload exhibits low compute throughput and memory bandwidth utilization relative to the peak           
+          performance of this device. Achieved compute throughput and/or memory bandwidth below 60.0% of peak           
+          typically indicate latency issues. Look at Scheduler Statistics and Warp State Statistics for potential       
+          reasons.                                                                                                      
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        58.83
+    Achieved Active Warps Per SM           warp        37.65
+    ------------------------------- ----------- ------------
+
+    OPT   Est. Local Speedup: 41.17%                                                                                    
+          The difference between calculated theoretical (100.0%) and measured achieved occupancy (58.8%) can be the     
+          result of warp scheduling overheads or workload imbalances during the kernel execution. Load imbalances can   
+          occur between warps within a block as well as across blocks of the same kernel. See the CUDA Best Practices   
+          Guide (https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#occupancy) for more details on     
+          optimizing occupancy.                                                                                         
+

@@ -1,0 +1,11 @@
+# build artifacts
+*.o
+optimized/*/main
+src/*/main
+# stray run outputs
+image_out.pgm
+output*.out
+SdkConsoleLog.txt
+# slurm logs + convenience symlinks
+logs/
+optimized/data

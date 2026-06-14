@@ -1,0 +1,13 @@
+==3430077== NVPROF is profiling process 3430077, command: /home/r14922146/hecbench-cuda-optimization/optimized/lavaMD-cuda/main -boxes1d 30
+WG size of kernel = 128 
+Configuration used: arch = 0, cores = 1, boxes1d = 30
+Device offloading time:
+0.352156924000 s
+Kernel execution time:
+0.034626637000 s
+==3430077== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/lavaMD-cuda/main -boxes1d 30
+==3430077== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   51.48%  33.770ms         1  33.770ms  33.770ms  33.770ms  md(box_str const *, FOUR_VECTOR const *, float const *, FOUR_VECTOR*, float, int)
+                   35.32%  23.169ms         4  5.7922ms  2.1368ms  8.7624ms  [CUDA memcpy HtoD]
+                   13.20%  8.6622ms         1  8.6622ms  8.6622ms  8.6622ms  [CUDA memcpy DtoH]

@@ -1,0 +1,27 @@
+==3341265== NVPROF is profiling process 3341265, command: /home/r14922146/src/nbody-cuda/main 16000 3
+===============================
+ Initialize Gravity Simulation
+
+# Total Energy        : 926.559
+# Total Time (s)      : 0.00855657
+# Average Performance : 1943.43 +- 0
+===============================
+
+PASS
+==3341265== Profiling application: /home/r14922146/src/nbody-cuda/main 16000 3
+==3341265== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   91.48%  101.99ms         2  50.997ms  9.6940us  101.98ms  cudaMalloc
+                    7.41%  8.2590ms         3  2.7530ms  2.7505ms  2.7552ms  cudaDeviceSynchronize
+                    0.39%  438.98us       114  3.8500us      70ns  212.31us  cuDeviceGetAttribute
+                    0.26%  291.37us         2  145.69us  7.2150us  284.16us  cudaFree
+                    0.21%  229.03us         9  25.448us  3.1620us  196.46us  cudaLaunchKernel
+                    0.16%  181.86us         2  90.930us  27.282us  154.58us  cudaMemcpyAsync
+                    0.05%  58.235us         3  19.411us  12.251us  32.856us  cudaMemcpy
+                    0.02%  26.261us         1  26.261us  26.261us  26.261us  cuDeviceGetName
+                    0.01%  13.912us         1  13.912us  13.912us  13.912us  cuDeviceGetPCIBusId
+                    0.00%  1.3940us         3     464ns      66ns  1.2280us  cuDeviceGetCount
+                    0.00%     527ns         1     527ns     527ns     527ns  cuDeviceTotalMem
+                    0.00%     524ns         2     262ns      66ns     458ns  cuDeviceGet
+                    0.00%     416ns         1     416ns     416ns     416ns  cuDeviceGetUuid
+                    0.00%     212ns         1     212ns     212ns     212ns  cuModuleGetLoadingMode

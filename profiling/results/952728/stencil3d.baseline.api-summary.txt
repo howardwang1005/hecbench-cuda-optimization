@@ -1,0 +1,20 @@
+==2258264== NVPROF is profiling process 2258264, command: /home/r14922146/src/stencil3d-cuda/main 512 10
+==2258264== Grid dimension: nx=512 ny=512 nz=512
+Average kernel execution time: 0.035935 (s)
+Profiling application: /home/r14922146/src/stencil3d-cuda/main 512 10
+==2258264== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   85.47%  2.70230s         3  900.77ms  218.25ms  1.96245s  cudaMemcpy
+                   11.40%  360.41ms         2  180.20ms  1.2322ms  359.18ms  cudaDeviceSynchronize
+                    2.92%  92.370ms         3  30.790ms  389.91us  91.256ms  cudaMalloc
+                    0.19%  5.9178ms         3  1.9726ms  635.35us  4.4842ms  cudaFree
+                    0.01%  370.00us       114  3.2450us      70ns  176.40us  cuDeviceGetAttribute
+                    0.01%  168.94us        10  16.893us  2.7770us  138.30us  cudaLaunchKernel
+                    0.00%  44.796us         1  44.796us  44.796us  44.796us  cudaMemset
+                    0.00%  9.6090us         1  9.6090us  9.6090us  9.6090us  cuDeviceGetName
+                    0.00%  8.3830us         1  8.3830us  8.3830us  8.3830us  cuDeviceGetPCIBusId
+                    0.00%     857ns         3     285ns      84ns     682ns  cuDeviceGetCount
+                    0.00%     362ns         2     181ns      79ns     283ns  cuDeviceGet
+                    0.00%     249ns         1     249ns     249ns     249ns  cuDeviceTotalMem
+                    0.00%     195ns         1     195ns     195ns     195ns  cuModuleGetLoadingMode
+                    0.00%     147ns         1     147ns     147ns     147ns  cuDeviceGetUuid

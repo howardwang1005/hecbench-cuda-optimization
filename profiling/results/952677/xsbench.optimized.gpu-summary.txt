@@ -1,0 +1,49 @@
+==2096951== NVPROF is profiling process 2096951, command: /home/r14922146/hecbench-cuda-optimization/optimized/xsbench-cuda/main -s large -m event -r 1
+==2096951==                                   INPUT SUMMARY
+================================================================================
+Simulation Method:            Event Based
+Grid Type:                    Unionized Grid
+Materials:                    12
+H-M Benchmark Size:           large
+Total Nuclides:               355
+Gridpoints (per Nuclide):     11,303
+Unionized Energy Gridpoints:  4,012,565
+Total XS Lookups:             17,000,000
+Est. Memory Usage (MB):       5,649
+Binary File Mode:             Off
+================================================================================
+                         INITIALIZATION - DO NOT PROFILE
+================================================================================
+Intializing nuclide grids...
+Intializing unionized grid...
+Intializing material data...
+Intialization complete. Allocated 5648 MB of data.
+
+================================================================================
+                                   SIMULATION
+================================================================================
+Beginning event based simulation...
+Allocating an additional 64.8 MB of memory for verification arrays...
+Running on: Tesla V100-SXM2-32GB
+Initializing device buffers and JIT compiling kernel...
+Beginning event based simulation on the host for verification...
+
+Simulation complete.
+================================================================================
+                                     RESULTS
+================================================================================
+Total Time Statistics (Device Init / JIT Compilation + Simulation Kernel)
+Runtime:               53.596 seconds
+Lookups:               17,000,000
+Lookups/s:             317,188
+Simulation Kernel Only Statistics
+Average kernel execution time: 0.363 seconds
+Lookups/s:             46,839,596
+Verification checksum: 50951281 (Valid)
+================================================================================
+Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/xsbench-cuda/main -s large -m event -r 1
+==2096951== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   75.71%  1.20204s         6  200.34ms  1.4400us  1.15670s  [CUDA memcpy HtoD]
+                   22.84%  362.69ms         1  362.69ms  362.69ms  362.69ms  lookup(int const *, double const *, int const *, NuclideGridPoint const *, int*, double const *, int const *, int, long, long, int, int, int)
+                    1.45%  22.951ms         1  22.951ms  22.951ms  22.951ms  [CUDA memcpy DtoH]

@@ -1,0 +1,49 @@
+ calloc host_output
+ malloc input
+ malloc coeff
+ generateRandomData
+
+FDTD on 192 x 184 x 184 volume with symmetric filter radius 4 for 10 timesteps...
+
+fdtdReference...
+ calloc intermediate
+ Host FDTD loop
+	t = 0
+	t = 1
+	t = 2
+	t = 3
+	t = 4
+	t = 5
+	t = 6
+	t = 7
+	t = 8
+	t = 9
+
+fdtdReference complete
+ calloc device_output
+fdtdGPU...
+==3448940== NVPROF is profiling process 3448940, command: /home/r14922146/hecbench-cuda-optimization/optimized/fdtd3d-cuda/main --dimx=192 --dimy=184 --timesteps=10
+ set block size to 32x8
+ set grid size to 6x23
+ GPU FDTD loop
+Average kernel execution time 0.000215 (s)
+fdtdGPU complete
+
+CompareData (tolerance 0.000100)...
+==3448940== PASS
+Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/fdtd3d-cuda/main --dimx=192 --dimy=184 --timesteps=10
+==3448940== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   78.61%  98.916ms         3  32.972ms  149.76us  98.610ms  cudaMalloc
+                   18.61%  23.419ms         4  5.8548ms  33.986us  11.171ms  cudaMemcpy
+                    1.63%  2.0524ms         2  1.0262ms  129.44us  1.9229ms  cudaDeviceSynchronize
+                    0.53%  664.65us         3  221.55us  145.53us  349.24us  cudaFree
+                    0.41%  513.78us       114  4.5060us      69ns  251.81us  cuDeviceGetAttribute
+                    0.18%  221.04us        10  22.103us  2.7640us  190.40us  cudaLaunchKernel
+                    0.02%  27.725us         1  27.725us  27.725us  27.725us  cuDeviceGetName
+                    0.01%  13.613us         1  13.613us  13.613us  13.613us  cuDeviceGetPCIBusId
+                    0.00%  1.1280us         3     376ns      79ns     954ns  cuDeviceGetCount
+                    0.00%     501ns         2     250ns      96ns     405ns  cuDeviceGet
+                    0.00%     261ns         1     261ns     261ns     261ns  cuDeviceTotalMem
+                    0.00%     200ns         1     200ns     200ns     200ns  cuModuleGetLoadingMode
+                    0.00%     138ns         1     138ns     138ns     138ns  cuDeviceGetUuid
