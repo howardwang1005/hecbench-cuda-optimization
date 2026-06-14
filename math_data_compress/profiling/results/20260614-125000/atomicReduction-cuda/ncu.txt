@@ -1,0 +1,402 @@
+Array size: 200 MB
+Repeat the kernel execution: 100 times
+==PROF== Connected to process 148158 (/home/u6721928/hecbench-cuda-optimization/math_data_compress/hecbench-src/src/atomicReduction-cuda/main)
+Device name: Tesla V100-SXM2-32GB
+==PROF== Profiling "atomic_reduction" - 0 (1/3): 0%....50%....100% - 19 passes
+==PROF== Profiling "atomic_reduction" - 1 (2/3): 0%....50%....100% - 19 passes
+==PROF== Profiling "atomic_reduction" - 2 (3/3): 0%....50%....100% - 19 passes
+Thread block size: 128, The average performance of reduction is 675.446 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 128, The average performance of reduction is 834.336 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 128, The average performance of reduction is 842.32 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 128, The average performance of reduction is 819.617 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 128, The average performance of reduction is 613.996 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 693.339 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 832.245 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 858.98 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 836.251 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 256, The average performance of reduction is 698.558 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 746.119 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 822.085 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 847.758 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 786.94 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 512, The average performance of reduction is 684.5 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 768.785 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 847.075 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 844.677 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 825.283 GBytes/sec
+VERIFICATION: PASS
+
+Thread block size: 1024, The average performance of reduction is 584.952 GBytes/sec
+VERIFICATION: PASS
+
+==PROF== Disconnected from process 148158
+[148158] main@127.0.0.1
+  atomic_reduction(int *, int *, int) (2048, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       863.93
+    SM Frequency                    Ghz         1.29
+    Elapsed Cycles                cycle       399988
+    Memory Throughput                 %        77.37
+    DRAM Throughput                   %        77.37
+    Duration                         us       308.51
+    L1/TEX Cache Throughput           %        22.22
+    L2 Cache Throughput               %        27.24
+    SM Active Cycles              cycle    368610.78
+    Compute (SM) Throughput           %        10.91
+    ----------------------- ----------- ------------
+
+    OPT   Memory is more heavily utilized than Compute: Look at the Memory Workload Analysis section to identify the    
+          DRAM bottleneck. Check memory replay (coalescing) metrics to make sure you're efficiently utilizing the       
+          bytes transferred. Also consider whether it is possible to do more work per memory access (kernel fusion) or  
+          whether there are values you can (re)compute.                                                                 
+
+    Section: Memory Workload Analysis
+    ----------------- ----------- ------------
+    Metric Name       Metric Unit Metric Value
+    ----------------- ----------- ------------
+    Memory Throughput     Gbyte/s       684.47
+    Mem Busy                    %        27.24
+    Max Bandwidth               %        77.37
+    L1/TEX Hit Rate             %            0
+    L2 Hit Rate                 %         0.25
+    Mem Pipes Busy              %         5.76
+    ----------------- ----------- ------------
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   256
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                   2048
+    Registers Per Thread             register/thread              16
+    Shared Memory Configuration Size            byte               0
+    Driver Shared Memory Per Block        byte/block               0
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    # SMs                                         SM              80
+    Stack Size                                                  1024
+    Threads                                   thread          524288
+    # TPCs                                                        40
+    Enabled TPC IDs                                              all
+    Uses Green Context                                             0
+    Waves Per SM                                                3.20
+    -------------------------------- --------------- ---------------
+
+    OPT   Est. Speedup: 25%                                                                                             
+          A wave of thread blocks is defined as the maximum number of blocks that can be executed in parallel on the    
+          target GPU. The number of blocks in a wave depends on the number of multiprocessors and the theoretical       
+          occupancy of the kernel. This kernel launch results in 3 full waves and a partial wave of 129 thread blocks.  
+          Under the assumption of a uniform execution duration of all thread blocks, this partial wave may account for  
+          up to 25.0% of the total runtime of this kernel. Try launching a grid with no partial wave. The overall       
+          impact of this tail effect also lessens with the number of full waves executed for a grid. See the Hardware   
+          Model (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model) description for     
+          more details on launch configurations.                                                                        
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        92.27
+    Achieved Active Warps Per SM           warp        59.05
+    ------------------------------- ----------- ------------
+
+    Section: GPU and Memory Workload Distribution
+    -------------------------- ----------- ------------
+    Metric Name                Metric Unit Metric Value
+    -------------------------- ----------- ------------
+    Average DRAM Active Cycles       cycle    206218.16
+    Total DRAM Elapsed Cycles        cycle      8529024
+    Average L1 Active Cycles         cycle    368610.78
+    Total L1 Elapsed Cycles          cycle     31287838
+    Average L2 Active Cycles         cycle    365379.23
+    Total L2 Elapsed Cycles          cycle     24116416
+    Average SM Active Cycles         cycle    368610.78
+    Total SM Elapsed Cycles          cycle     31287838
+    Average SMSP Active Cycles       cycle    366101.56
+    Total SMSP Elapsed Cycles        cycle    125151352
+    -------------------------- ----------- ------------
+
+    OPT   Est. Speedup: 5.565%                                                                                          
+          One or more SMs have a much lower number of active cycles than the average number of active cycles. Maximum   
+          instance value is 5.90% above the average, while the minimum instance value is 8.22% below the average.       
+    ----- --------------------------------------------------------------------------------------------------------------
+    OPT   Est. Speedup: 6.505%                                                                                          
+          One or more SMSPs have a much higher number of active cycles than the average number of active cycles.        
+          Additionally, other SMSPs have a much lower number of active cycles than the average number of active         
+          cycles. Maximum instance value is 6.95% above the average, while the minimum instance value is 7.68% below    
+          the average.                                                                                                  
+    ----- --------------------------------------------------------------------------------------------------------------
+    OPT   Est. Speedup: 5.565%                                                                                          
+          One or more L1 Slices have a much lower number of active cycles than the average number of active cycles.     
+          Maximum instance value is 5.90% above the average, while the minimum instance value is 8.22% below the        
+          average.                                                                                                      
+
+  atomic_reduction(int *, int *, int) (2048, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       877.18
+    SM Frequency                    Ghz         1.30
+    Elapsed Cycles                cycle       395276
+    Memory Throughput                 %        77.13
+    DRAM Throughput                   %        77.13
+    Duration                         us       304.80
+    L1/TEX Cache Throughput           %        22.21
+    L2 Cache Throughput               %        27.33
+    SM Active Cycles              cycle    368845.74
+    Compute (SM) Throughput           %        10.84
+    ----------------------- ----------- ------------
+
+    OPT   Memory is more heavily utilized than Compute: Look at the Memory Workload Analysis section to identify the    
+          DRAM bottleneck. Check memory replay (coalescing) metrics to make sure you're efficiently utilizing the       
+          bytes transferred. Also consider whether it is possible to do more work per memory access (kernel fusion) or  
+          whether there are values you can (re)compute.                                                                 
+
+    Section: Memory Workload Analysis
+    ----------------- ----------- ------------
+    Metric Name       Metric Unit Metric Value
+    ----------------- ----------- ------------
+    Memory Throughput     Gbyte/s       692.81
+    Mem Busy                    %        27.33
+    Max Bandwidth               %        77.13
+    L1/TEX Hit Rate             %            0
+    L2 Hit Rate                 %         0.25
+    Mem Pipes Busy              %         5.73
+    ----------------- ----------- ------------
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   256
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                   2048
+    Registers Per Thread             register/thread              16
+    Shared Memory Configuration Size            byte               0
+    Driver Shared Memory Per Block        byte/block               0
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    # SMs                                         SM              80
+    Stack Size                                                  1024
+    Threads                                   thread          524288
+    # TPCs                                                        40
+    Enabled TPC IDs                                              all
+    Uses Green Context                                             0
+    Waves Per SM                                                3.20
+    -------------------------------- --------------- ---------------
+
+    OPT   Est. Speedup: 25%                                                                                             
+          A wave of thread blocks is defined as the maximum number of blocks that can be executed in parallel on the    
+          target GPU. The number of blocks in a wave depends on the number of multiprocessors and the theoretical       
+          occupancy of the kernel. This kernel launch results in 3 full waves and a partial wave of 129 thread blocks.  
+          Under the assumption of a uniform execution duration of all thread blocks, this partial wave may account for  
+          up to 25.0% of the total runtime of this kernel. Try launching a grid with no partial wave. The overall       
+          impact of this tail effect also lessens with the number of full waves executed for a grid. See the Hardware   
+          Model (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model) description for     
+          more details on launch configurations.                                                                        
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        92.28
+    Achieved Active Warps Per SM           warp        59.06
+    ------------------------------- ----------- ------------
+
+    Section: GPU and Memory Workload Distribution
+    -------------------------- ----------- ------------
+    Metric Name                Metric Unit Metric Value
+    -------------------------- ----------- ------------
+    Average DRAM Active Cycles       cycle    206217.84
+    Total DRAM Elapsed Cycles        cycle      8555648
+    Average L1 Active Cycles         cycle    368845.74
+    Total L1 Elapsed Cycles          cycle     31454286
+    Average L2 Active Cycles         cycle    366911.25
+    Total L2 Elapsed Cycles          cycle     24039616
+    Average SM Active Cycles         cycle    368845.74
+    Total SM Elapsed Cycles          cycle     31454286
+    Average SMSP Active Cycles       cycle    366157.78
+    Total SMSP Elapsed Cycles        cycle    125817144
+    -------------------------- ----------- ------------
+
+    OPT   Est. Speedup: 5.902%                                                                                          
+          One or more SMs have a much lower number of active cycles than the average number of active cycles. Maximum   
+          instance value is 6.29% above the average, while the minimum instance value is 8.60% below the average.       
+    ----- --------------------------------------------------------------------------------------------------------------
+    OPT   Est. Speedup: 5.958%                                                                                          
+          One or more SMSPs have a much higher number of active cycles than the average number of active cycles.        
+          Additionally, other SMSPs have a much lower number of active cycles than the average number of active         
+          cycles. Maximum instance value is 6.40% above the average, while the minimum instance value is 7.77% below    
+          the average.                                                                                                  
+    ----- --------------------------------------------------------------------------------------------------------------
+    OPT   Est. Speedup: 5.902%                                                                                          
+          One or more L1 Slices have a much lower number of active cycles than the average number of active cycles.     
+          Maximum instance value is 6.29% above the average, while the minimum instance value is 8.60% below the        
+          average.                                                                                                      
+
+  atomic_reduction(int *, int *, int) (2048, 1, 1)x(256, 1, 1), Context 1, Stream 7, Device 0, CC 7.0
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ------------
+    Metric Name             Metric Unit Metric Value
+    ----------------------- ----------- ------------
+    DRAM Frequency                  Mhz       868.15
+    SM Frequency                    Ghz         1.30
+    Elapsed Cycles                cycle       397865
+    Memory Throughput                 %        77.43
+    DRAM Throughput                   %        77.43
+    Duration                         us       306.78
+    L1/TEX Cache Throughput           %        22.43
+    L2 Cache Throughput               %        27.15
+    SM Active Cycles              cycle    365227.76
+    Compute (SM) Throughput           %        10.85
+    ----------------------- ----------- ------------
+
+    OPT   Memory is more heavily utilized than Compute: Look at the Memory Workload Analysis section to identify the    
+          DRAM bottleneck. Check memory replay (coalescing) metrics to make sure you're efficiently utilizing the       
+          bytes transferred. Also consider whether it is possible to do more work per memory access (kernel fusion) or  
+          whether there are values you can (re)compute.                                                                 
+
+    Section: Memory Workload Analysis
+    ----------------- ----------- ------------
+    Metric Name       Metric Unit Metric Value
+    ----------------- ----------- ------------
+    Memory Throughput     Gbyte/s       688.37
+    Mem Busy                    %        27.15
+    Max Bandwidth               %        77.43
+    L1/TEX Hit Rate             %            0
+    L2 Hit Rate                 %         0.25
+    Mem Pipes Busy              %         5.73
+    ----------------- ----------- ------------
+
+    Section: Launch Statistics
+    -------------------------------- --------------- ---------------
+    Metric Name                          Metric Unit    Metric Value
+    -------------------------------- --------------- ---------------
+    Block Size                                                   256
+    Function Cache Configuration                     CachePreferNone
+    Grid Size                                                   2048
+    Registers Per Thread             register/thread              16
+    Shared Memory Configuration Size            byte               0
+    Driver Shared Memory Per Block        byte/block               0
+    Dynamic Shared Memory Per Block       byte/block               0
+    Static Shared Memory Per Block        byte/block               0
+    # SMs                                         SM              80
+    Stack Size                                                  1024
+    Threads                                   thread          524288
+    # TPCs                                                        40
+    Enabled TPC IDs                                              all
+    Uses Green Context                                             0
+    Waves Per SM                                                3.20
+    -------------------------------- --------------- ---------------
+
+    OPT   Est. Speedup: 25%                                                                                             
+          A wave of thread blocks is defined as the maximum number of blocks that can be executed in parallel on the    
+          target GPU. The number of blocks in a wave depends on the number of multiprocessors and the theoretical       
+          occupancy of the kernel. This kernel launch results in 3 full waves and a partial wave of 129 thread blocks.  
+          Under the assumption of a uniform execution duration of all thread blocks, this partial wave may account for  
+          up to 25.0% of the total runtime of this kernel. Try launching a grid with no partial wave. The overall       
+          impact of this tail effect also lessens with the number of full waves executed for a grid. See the Hardware   
+          Model (https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#metrics-hw-model) description for     
+          more details on launch configurations.                                                                        
+
+    Section: Occupancy
+    ------------------------------- ----------- ------------
+    Metric Name                     Metric Unit Metric Value
+    ------------------------------- ----------- ------------
+    Block Limit SM                        block           32
+    Block Limit Registers                 block           16
+    Block Limit Shared Mem                block           32
+    Block Limit Warps                     block            8
+    Theoretical Active Warps per SM        warp           64
+    Theoretical Occupancy                     %          100
+    Achieved Occupancy                        %        93.14
+    Achieved Active Warps Per SM           warp        59.61
+    ------------------------------- ----------- ------------
+
+    Section: GPU and Memory Workload Distribution
+    -------------------------- ----------- ------------
+    Metric Name                Metric Unit Metric Value
+    -------------------------- ----------- ------------
+    Average DRAM Active Cycles       cycle    206231.47
+    Total DRAM Elapsed Cycles        cycle      8522752
+    Average L1 Active Cycles         cycle    365227.76
+    Total L1 Elapsed Cycles          cycle     31441144
+    Average L2 Active Cycles         cycle    364566.77
+    Total L2 Elapsed Cycles          cycle     24199104
+    Average SM Active Cycles         cycle    365227.76
+    Total SM Elapsed Cycles          cycle     31441144
+    Average SMSP Active Cycles       cycle    366286.48
+    Total SMSP Elapsed Cycles        cycle    125764576
+    -------------------------- ----------- ------------
+
+    OPT   Est. Speedup: 6.355%                                                                                          
+          One or more SMs have a much higher number of active cycles than the average number of active cycles.          
+          Additionally, other SMs have a much lower number of active cycles than the average number of active cycles.   
+          Maximum instance value is 6.84% above the average, while the minimum instance value is 6.94% below the        
+          average.                                                                                                      
+    ----- --------------------------------------------------------------------------------------------------------------
+    OPT   Est. Speedup: 6.144%                                                                                          
+          One or more SMSPs have a much higher number of active cycles than the average number of active cycles.        
+          Additionally, other SMSPs have a much lower number of active cycles than the average number of active         
+          cycles. Maximum instance value is 6.59% above the average, while the minimum instance value is 8.02% below    
+          the average.                                                                                                  
+    ----- --------------------------------------------------------------------------------------------------------------
+    OPT   Est. Speedup: 6.355%                                                                                          
+          One or more L1 Slices have a much higher number of active cycles than the average number of active cycles.    
+          Additionally, other L1 Slices have a much lower number of active cycles than the average number of active     
+          cycles. Maximum instance value is 6.84% above the average, while the minimum instance value is 6.94% below    
+          the average.                                                                                                  
+
