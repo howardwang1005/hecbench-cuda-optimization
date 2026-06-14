@@ -109,7 +109,7 @@ __global__ void cuThomasBatchPCR(const double *__restrict__ L,
 void launchThomasPCR(const double *L, const double *D, double *U, double *RHS,
                      int M, int BATCHCOUNT, size_t smem_bytes)
 {
-  cudaFuncSetAttribute(cuThomasBatchPCR,
+  cudaFuncSetAttribute((const void *)cuThomasBatchPCR,
                        cudaFuncAttributeMaxDynamicSharedMemorySize,
                        (int)smem_bytes);
   cuThomasBatchPCR<<<BATCHCOUNT, M, smem_bytes>>>(L, D, U, RHS, M, BATCHCOUNT);

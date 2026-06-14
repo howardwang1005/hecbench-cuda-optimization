@@ -71,8 +71,8 @@ check_scan()    { grep -q "FAIL" "$1" && echo FAIL || (grep -q "PASS" "$1" && ec
 
 unit_of()  { case "$1" in thomas) echo ms;; gaussian|bscan|scan) echo us;; jaccard) echo s;; esac; }
 
-run_variant() { # name dir args logprefix
-  local name="$1" dir="$2" log="$4"; shift 3; local args="$*"
+run_variant() { # name dir placeholder logpath args...
+  local name="$1" dir="$2" log="$4"; shift 4; local args="$*"
   # warmup
   ( cd "$dir" && ./main $args ) >/dev/null 2>&1
   for r in $(seq 1 "$REPEAT"); do
