@@ -179,57 +179,35 @@ jaccard_is_opt(const int n, const int e,
       int ref= (Ni < Nj) ? row : col;
       int cur= (Ni < Nj) ? col : row;
 
-      //compute new sum weights (one lane writes; the value is identical per j)
-      if (threadIdx.x == 0)
-        weight_s[j] = work[row] + work[col];
+      //compute new sum weights
+      weight_s[j] = work[row] + work[col];
 
       //compute new intersection weights
-      //
-      // Optimized: the baseline runs a SERIAL two-pointer merge on threadIdx.x==0
-      // only, leaving the other blockDim.x lanes (8 at the call site) idle — i.e.
-      // 7/8 of the threads do nothing. ncu showed this kernel at 7.75 ms / 20%
-      // occupancy / 49% compute, dominated by that serial scan.
-      //
-      // Here all blockDim.x lanes cooperate: each lane strides over the reference
-      // row, binary-searches each of its column indices in the current row, and
-      // accumulates a partial sum. The lanes then reduce within their x-group and
-      // a single lane issues one atomicAdd per j. Verified on CPU to match the
-      // two-pointer result exactly (see profiling/optimization/jaccard-cuda).
-      {
-        const int ref_beg = csrPtr[ref];
-        const int ref_end = csrPtr[ref+1];
-        const int cur_beg = csrPtr[cur];
-        const int cur_end = csrPtr[cur+1] - 1;   // inclusive upper bound
-
+      //search for the element with the same column index in the reference row
+      if (threadIdx.x == 0) {
         T local_sum = 0;
-        for (int i = ref_beg + threadIdx.x; i < ref_end; i += blockDim.x) {
-          const int ref_col = csrInd[i];
-          // binary search for ref_col in the (sorted) current row
-          int left = cur_beg, right = cur_end, match = -1;
-          while (left <= right) {
-            int middle = (left + right) >> 1;
-            int cur_col = csrInd[middle];
-            if      (cur_col > ref_col) right = middle - 1;
-            else if (cur_col < ref_col) left  = middle + 1;
-            else { match = middle; break; }
+        int i_ptr = csrPtr[ref];      // pointer in reference row
+        int j_ptr = csrPtr[cur];        // pointer in current row
+        int ref_end = csrPtr[ref+1];
+        int cur_end = csrPtr[cur+1];
+
+        // Two-pointer merge for intersection of the two sorted lists
+        while (i_ptr < ref_end && j_ptr < cur_end) {
+          int ref_col = csrInd[i_ptr];
+          int cur_col = csrInd[j_ptr];
+          if (ref_col == cur_col) {
+            T ref_val = weighted ? v[ref_col] : (T)1.0;
+            local_sum += ref_val;
+            i_ptr++;
+            j_ptr++;
+          } else if (ref_col < cur_col) {
+            i_ptr++;
+          } else {
+            j_ptr++;
           }
-          if (match != -1)
-            local_sum += weighted ? v[ref_col] : (T)1.0;
         }
-
-        // Reduce local_sum across the blockDim.x lanes of this x-group. The lanes
-        // x in [0,blockDim.x) for a fixed threadIdx.y are contiguous within the
-        // warp (warp lane = threadIdx.x + blockDim.x*threadIdx.y). Different y
-        // groups may execute a different number of `j` iterations, so we must NOT
-        // name the whole warp: build a mask covering exactly this x-group's lanes,
-        // otherwise shfl over inactive lanes is undefined.
-        const unsigned grp_mask =
-            ((1u << blockDim.x) - 1u) << (blockDim.x * threadIdx.y);
-        for (int off = blockDim.x >> 1; off > 0; off >>= 1)
-          local_sum += __shfl_down_sync(grp_mask, local_sum, off, blockDim.x);
-
-        // lane 0 of the x-group issues the single atomic update for this j
-        if (threadIdx.x == 0 && local_sum != 0)
+        // perform a single atomic update per this j index
+        if (local_sum != 0)
           atomicAdd(&weight_i[j], local_sum);
       }
     }
