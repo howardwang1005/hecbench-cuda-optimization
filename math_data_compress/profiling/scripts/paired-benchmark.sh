@@ -71,6 +71,25 @@ check_scan()    { grep -q "FAIL" "$1" && echo FAIL || (grep -q "PASS" "$1" && ec
 
 unit_of()  { case "$1" in thomas) echo ms;; gaussian|bscan|scan) echo us;; jaccard) echo s;; esac; }
 
+# Official HeCBench baseline medians (baseline/results/951758/summary), in the
+# SAME unit/aggregation each extractor produces, so optimized can be compared to
+# the published target regardless of how the locally-rebuilt baseline behaves.
+#   thomas: average_kernel_execution_time (ms)
+#   gaussian: total_kernel_execution_time (us)
+#   jaccard: weighted+unweighted pipeline sum (s)
+#   bscan: sum of 6 block-size execution_time (us)
+#   scan: sum of 20 with-conflicts timings (us)
+official_of() {
+  case "$1" in
+    thomas)   echo 2.352232 ;;
+    gaussian) echo 490962 ;;
+    jaccard)  echo 0.01229218 ;;
+    bscan)    echo 2884.6 ;;
+    scan)     echo 107187.2 ;;
+    *)        echo NA ;;
+  esac
+}
+
 run_variant() { # name dir placeholder logpath args...
   local name="$1" dir="$2" log="$4"; shift 4; local args="$*"
   # warmup
@@ -81,8 +100,9 @@ run_variant() { # name dir placeholder logpath args...
   cp "${log}.run1" "${log}"   # keep run1 as the representative full log
 }
 
-printf "\n%-10s %12s %12s %9s  %-8s %-8s\n" "benchmark" "baseline" "optimized" "speedup" "base_ok" "opt_ok"
-printf -- "------------------------------------------------------------------------\n"
+printf "\n%-10s %12s %12s %12s %9s %9s  %-7s\n" \
+  "benchmark" "official" "local_base" "optimized" "vs_offic" "vs_local" "opt_ok"
+printf -- "----------------------------------------------------------------------------------------\n"
 
 while IFS= read -r row; do
   [ -z "${row// }" ] && continue
@@ -107,15 +127,22 @@ while IFS= read -r row; do
   unit=$(unit_of "$name")
   bok=$("check_$name" "$bodir/baseline.log"); ook=$("check_$name" "$bodir/optimized.log")
 
-  sp=$(awk -v b="$bval" -v o="$oval" 'BEGIN{ if(o>0 && b!="NA" && o!="NA") printf "%.2fx", b/o; else print "NA" }')
-  printf "%-10s %12s %12s %9s  %-8s %-8s\n" "$name" "$bval" "$oval" "$sp" "$bok" "$ook"
-  echo "$name,baseline,kernel_time,$unit,$bval"  >> "$SUMMARY"
-  echo "$name,optimized,kernel_time,$unit,$oval" >> "$SUMMARY"
-  echo "$name,speedup,ratio,x,$sp"               >> "$SUMMARY"
+  off=$(official_of "$name")
+  # speedup vs official published baseline (the real target) and vs local rebuild
+  sp_off=$(awk -v b="$off"  -v o="$oval" 'BEGIN{ if(o>0 && b!="NA" && o!="NA") printf "%.2fx", b/o; else print "NA" }')
+  sp_loc=$(awk -v b="$bval" -v o="$oval" 'BEGIN{ if(o>0 && b!="NA" && o!="NA") printf "%.2fx", b/o; else print "NA" }')
+  printf "%-10s %12s %12s %12s %9s %9s  %-7s\n" "$name" "$off" "$bval" "$oval" "$sp_off" "$sp_loc" "$ook"
+  echo "$name,official_baseline,kernel_time,$unit,$off"  >> "$SUMMARY"
+  echo "$name,local_baseline,kernel_time,$unit,$bval"    >> "$SUMMARY"
+  echo "$name,optimized,kernel_time,$unit,$oval"         >> "$SUMMARY"
+  echo "$name,speedup_vs_official,ratio,x,$sp_off"       >> "$SUMMARY"
+  echo "$name,speedup_vs_local,ratio,x,$sp_loc"          >> "$SUMMARY"
 done <<< "$BENCHES"
 
-printf -- "------------------------------------------------------------------------\n"
-echo "Lower time = better for all 5 (speedup = baseline/optimized)."
+printf -- "----------------------------------------------------------------------------------------\n"
+echo "Lower time = better. vs_offic = official_baseline/optimized (THE TARGET);"
+echo "vs_local = locally-rebuilt baseline/optimized (same-env control, can drift)."
+echo "Official medians from baseline/results/951758. Pin CUDA_VISIBLE_DEVICES=0 for stable local numbers."
 echo "Full logs + summary.csv in: $OUT"
 echo
 echo "NOTE: jaccard's built-in check only runs under -DDEBUG; to gate correctness"
