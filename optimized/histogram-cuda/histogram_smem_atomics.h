@@ -136,9 +136,13 @@ double run_smem_atomics(
     // partial histograms slightly grows the accum kernel's reduction loop, but
     // accum is tiny relative to the pixel-scanning kernel.
     int blocksPerSM = 0;
+    // Assign the templated kernel to an explicitly-typed function pointer so the
+    // occupancy API's template overload can deduce the type (passing the bare
+    // templated __global__ name yields "no matching overload / <unknown-type>").
+    void (*k1)(const PixelType *, int, int, unsigned int *) =
+        histogram_smem_atomics<NUM_PARTS, ACTIVE_CHANNELS, NUM_BINS, PixelType>;
     cudaOccupancyMaxActiveBlocksPerMultiprocessor(
-        &blocksPerSM,
-        histogram_smem_atomics<NUM_PARTS, ACTIVE_CHANNELS, NUM_BINS>,
+        &blocksPerSM, k1,
         block.x * block.y, /*dynamic smem*/0);
     if (blocksPerSM < 1) blocksPerSM = 1;
     int target = blocksPerSM * props.multiProcessorCount;   // fill all SM slots
