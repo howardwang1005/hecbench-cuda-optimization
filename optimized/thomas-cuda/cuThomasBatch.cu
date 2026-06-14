@@ -101,6 +101,20 @@ __global__ void cuThomasBatchPCR(const double *__restrict__ L,
   RHS[gi] = sr[i] / sd[i];
 }
 
+// Host launcher kept in THIS translation unit so that taking the address of the
+// __global__ cuThomasBatchPCR (for cudaFuncSetAttribute) happens where the kernel
+// is defined. Taking a __global__'s address from another .cu under whole-program
+// compilation produces an "undefined reference" at link time; launching it via
+// <<<>>> from the same TU avoids needing -rdc=true.
+void launchThomasPCR(const double *L, const double *D, double *U, double *RHS,
+                     int M, int BATCHCOUNT, size_t smem_bytes)
+{
+  cudaFuncSetAttribute(cuThomasBatchPCR,
+                       cudaFuncAttributeMaxDynamicSharedMemorySize,
+                       (int)smem_bytes);
+  cuThomasBatchPCR<<<BATCHCOUNT, M, smem_bytes>>>(L, D, U, RHS, M, BATCHCOUNT);
+}
+
 // Compatibility wrapper keeping the original name/signature so callers that
 // still launch "cuThomasBatch" work. main.cu launches cuThomasBatchPCR directly
 // with one block per system and the shared-memory size; this wrapper is only a

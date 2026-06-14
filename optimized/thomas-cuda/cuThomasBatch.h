@@ -12,6 +12,8 @@
  *
  **/
 
+#include <cstddef>   // size_t
+
 __global__ void cuThomasBatch(
             const double *L, const double *D, double *U, double *RHS,
             const int M,
@@ -23,3 +25,9 @@ __global__ void cuThomasBatchPCR(
             const double *L, const double *D, double *U, double *RHS,
             const int M,
             const int BATCHCOUNT);
+
+// Host launcher (defined in cuThomasBatch.cu, same TU as the kernel) that sets
+// the dynamic-shared-memory attribute and launches cuThomasBatchPCR. Calling
+// this from main.cu avoids taking the kernel's address across translation units.
+void launchThomasPCR(const double *L, const double *D, double *U, double *RHS,
+                     int M, int BATCHCOUNT, size_t smem_bytes);
