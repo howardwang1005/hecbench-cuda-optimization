@@ -31,7 +31,7 @@ thomas    thomas-cuda    1024 16384 64 100
 gaussian  gaussian-cuda  -q -t -s 4096
 jaccard   jaccard-cuda   1024 512 1000
 bscan     bscan-cuda     1000
-scan      scan-cuda      268435456 100
+scan      scan-cuda      268435456 10
 histogram histogram-cuda --i=100
 filter    filter-cuda    100000000 256 100
 jacobi    jacobi-cuda

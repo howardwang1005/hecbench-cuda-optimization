@@ -5,7 +5,7 @@
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1               # one V100, like the official run
 #SBATCH --cpus-per-task=4
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00            # headroom; scan is the long pole (~256M elems)
 #SBATCH --output=paired-%j.out
 #SBATCH --error=paired-%j.err
 #
