@@ -1,0 +1,5 @@
+make: nvcc: No such file or directory
+make: nvcc: No such file or directory
+make: *** [gaussianElim.o] Error 1
+make: *** Waiting for unfinished jobs....
+make: *** [utils.o] Error 1
