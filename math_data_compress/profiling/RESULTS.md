@@ -103,7 +103,8 @@
 | **優化原理** | 純 launch-config 改動，**不改 kernel、不改演算法、不增加工作量**：只是把物理 grid 從固定 1280 放大到「填滿所有 SM block slot」，提升 achieved occupancy（0.5 wave → 接近填滿），讓更多 warp 常駐以藏記憶體延遲。grid-stride loop 保證對任意 grid 大小輸出相同，正確性 by construction。 |
 | **正確性** | 演算法數學未動，僅改物理 block 數；程式自帶 `verify()`（對每個 block/型別/N 與 CPU exclusive scan 比對）為把關。 |
 | **誠實註記** | 此題是五個 data-compression 題中**最不確定**的：kernel 本來就 87% memory / 78% compute，若已接近真實吞吐天花板，把 wave 數翻倍可能只有小幅提升。實際效果需以 V100 實測為準。另：本輪 paired 量測時 scan 的 program-repeat 由 100 降為 10 以縮短時間（scan 報的是每次平均，仍可比）。 |
-| **結果** | _(待填)_ |
+| **結果** | baseline 109586.96 us / **optimized 108237.26 us** → **1.01x（持平）** ➖ |
+| **說明** | 實測證實「最不確定」的判斷：kernel 本來就 87% memory / 78% compute，已接近吞吐天花板，把 wave 數翻倍只有 ~1% 提升（落在雜訊內）。佔多數時間的是大 N（256/512/1024/2048）的 bank-conflict-bound kernel，填滿 occupancy 對它們幫助有限。 |
 
 ---
 
@@ -121,13 +122,13 @@ speedup = baseline / optimized（同編譯器 12.3、同環境的公平對照）
 | 6 | bscan | 2894.7 us | 2909.0 us | 1.00x | ➖ 持平 |
 | 7 | **histogram** | 201.4 us | 388.0 us | **0.52x** | ❌ 變慢 |
 | 8 | atomicReduction | — | — | — | ⏭️ 未做（已達頻寬天花板）|
-| 9 | **scan** | _(待填)_ | _(待填)_ | _(待填)_ | _(自行填寫)_ |
+| 9 | scan | 109586.96 us | 108237.26 us | 1.01x | ➖ 持平 |
 
 ### 小結
 
 - **明確贏**（同編譯器下）：gaussian 1.72x、thomas 1.21x、jacobi 1.18x —— 三題都靠
   「**移除浪費而非增加工作量**」：縮 grid、register CSE、降同步頻率。
-- **持平**：filter / jaccard / bscan —— baseline 已接近最佳或已用相同手法，誠實退回或無實質空間。
+- **持平**：filter / jaccard / bscan / scan —— baseline 已接近最佳或已用相同手法，誠實退回或無實質空間。scan 實測 1.01x 證實了「已近吞吐天花板」的事前判斷。
 - **變慢**：histogram —— occupancy 初判誤判了第二階段 accum 的成本，待修正。
 - **未做**：atomicReduction —— 已達頻寬天花板。
 

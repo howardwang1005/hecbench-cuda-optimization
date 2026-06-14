@@ -1,0 +1,427 @@
+%==============================================================================
+%  FINAL PROJECT PAPER  (IEEE Conference format) -- Category B
+%  Profiling-Guided CUDA Optimization of 30 HeCBench Benchmarks via an AI Agent
+%==============================================================================
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+% Set PDF metadata explicitly so hyperref does not try to parse the
+% multi-line \title (the \\ and \footnotesize otherwise trigger a
+% "Missing number" error when hyperref auto-derives pdftitle).
+\hypersetup{
+  pdftitle={Profiling-Guided CUDA Optimization of 30 HeCBench Benchmarks with an AI Coding Agent},
+  pdfauthor={Final Project, Parallel Programming Spring 2026}
+}
+
+\newcommand{\mainbodyendpage}{?}
+\AtEndDocument{%
+  \typeout{====================================================}%
+  \typeout{[PAGE BUDGET] Main body + references end on page \mainbodyendpage\space (limit: 6, Appendix excluded).}%
+  \typeout{====================================================}%
+}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  columns=fullflexible,
+  showstringspaces=false,
+  keepspaces=true
+}
+
+\begin{document}
+
+\title{Profiling-Guided CUDA Optimization of 30 HeCBench
+Benchmarks with an AI Coding Agent\\
+{\footnotesize Final Project --- Parallel Programming, Spring 2026}}
+
+\author{%
+\IEEEauthorblockN{Student Name(s)}
+\IEEEauthorblockA{Student ID(s) \\ Department, Institution \\ email@example.edu}%
+}
+
+\maketitle
+
+%------------------------------------------------------------------------------
+\begin{abstract}
+We study how well an AI coding agent (Claude Code) can optimize real GPU kernels
+when it is driven by a strict, profiling-first workflow rather than by free-form
+``make it faster'' requests. Starting from 30 CUDA programs in the HeCBench
+suite, we instructed the agent to (1) profile each kernel with Nsight Compute,
+(2) classify its bottleneck (memory-bound, compute-bound, latency/occupancy-bound,
+or atomic-contention), and only then (3) apply a bottleneck-matched optimization,
+verifying numerical correctness against the original program before reporting any
+speedup. All builds and timings use one NVIDIA V100 with CUDA~12.3, comparing the
+agent's code against the unmodified baseline compiled by the \emph{same} compiler.
+Of 30 benchmarks, the agent produced confirmed speedups on 14 (best cases:
+xsbench 5.90$\times$, Floyd--Warshall 5.43$\times$, bilateral 2.9$\times$,
+nbody 2.0$\times$), correctly identified 8 as already near a hardware roofline and
+left them unchanged, regressed on a few before self-correcting, and could not run
+3 for lack of input data. The most instructive results are the failures: we give a
+profiling-grounded root-cause analysis of every case where an ``obvious''
+optimization made the code slower, which is the central lesson of the project.
+\end{abstract}
+
+\begin{IEEEkeywords}
+GPU computing, CUDA, performance profiling, AI coding agents, prompt engineering,
+roofline analysis.
+\end{IEEEkeywords}
+
+\vspace{0.5em}
+\noindent\fbox{\parbox{0.97\columnwidth}{\textbf{Project Category:}\quad
+$\square$~\textbf{A} (Self-chosen topic)\qquad
+$\boxtimes$~\textbf{B} (AI-agent code optimization)\\[2pt]
+\footnotesize AI-agent code optimization of an existing benchmark suite.}}
+
+%------------------------------------------------------------------------------
+\section{Introduction}
+GPU kernels are notoriously easy to ``optimize'' in ways that make them slower:
+raising occupancy can spill registers, parallelizing a serial loop can multiply
+the total work, and fusing kernels can duplicate computation. A human expert
+avoids these traps by first measuring \emph{why} a kernel is slow. Our question is
+whether an AI coding agent can be made to follow the same discipline, and how it
+behaves when an optimization that ``looks right'' is actually wrong.
+
+We take 30 CUDA programs from HeCBench~\cite{hecbench} --- spanning data
+reduction/scan, dense and sparse linear algebra, stencils, convolution, $N$-body,
+and Monte-Carlo transport --- and drive an AI coding agent through a fixed
+\emph{profile $\rightarrow$ classify $\rightarrow$ optimize $\rightarrow$ verify}
+loop. The contribution is twofold: (1) a prompt-engineering design that forces the
+agent to ground every change in profiler evidence and to verify correctness before
+claiming a speedup; and (2) a candid root-cause analysis of the agent's failures,
+which we argue is the most useful outcome of a Category-B study because it exposes
+where naive ``parallelize harder'' reasoning breaks down.
+
+%------------------------------------------------------------------------------
+\section{Background and Related Work}
+\textbf{Benchmark and dataset.}
+HeCBench~\cite{hecbench} is a large open suite of heterogeneous-computing kernels.
+We use 30 of its CUDA programs, chosen to cover distinct bottleneck
+\emph{classes} rather than one application area: reduction/scan/compaction
+(\texttt{scan}, \texttt{bscan}, \texttt{atomicReduction}, \texttt{filter},
+\texttt{histogram}), linear solvers (\texttt{thomas}, \texttt{gaussian}),
+stencils (\texttt{jacobi}, \texttt{heat}, \texttt{laplace3d}, \texttt{stencil3d},
+\texttt{fdtd3d}, \texttt{hotspot}/\texttt{hotspot3D}), convolution
+(\texttt{convolution1D/3D}, \texttt{convolutionSeparable}, \texttt{sobel},
+\texttt{bilateral}), graph/DP (\texttt{bfs}, \texttt{nw}, \texttt{floydwarshall},
+\texttt{snake}, \texttt{all-pairs-distance}, \texttt{jaccard}), and
+simulation/MC (\texttt{nbody}, \texttt{lavaMD}, \texttt{xsbench},
+\texttt{miniWeather}, \texttt{srad}). Each program ships its own input generator
+or data file and its own self-check, which we reuse. Three programs
+(\texttt{hotspot}, \texttt{hotspot3D}, \texttt{sobel}) require external input
+files not present in the distribution (only DVC pointer stubs were available), so
+they are reported as \emph{skipped}.
+
+\textbf{Baseline and tooling.}
+The baseline is each unmodified HeCBench program. The agent is Claude Code, given
+shell access to a V100 cluster, the CUDA toolkit, Nsight Compute
+(\texttt{ncu})/\texttt{nvprof}, and the benchmark sources. A key prior observation
+is that an HeCBench reference run exists, but it was compiled with a different
+toolchain; comparing against it would conflate compiler effects with the agent's
+changes. We therefore always rebuild the baseline with the same compiler used for
+the optimized code (Section~\ref{sec:setup}).
+
+\textbf{Roofline intuition.}
+The V100 has 80 SMs and $\approx$900\,GB/s of HBM2 bandwidth. A kernel is
+\emph{memory-bound} if it is near that bandwidth, \emph{compute-bound} if SM
+throughput is high while DRAM is idle, and \emph{latency/occupancy-bound} if both
+are low and there are too few resident warps to hide latency. The optimization
+that helps depends entirely on which of these holds --- the premise of our prompt.
+
+%------------------------------------------------------------------------------
+\section{Methodology}
+The core of a Category-B project is how the agent is \emph{instructed}. Our prompt
+design has four enforced stages; the agent is told not to advance until the
+current stage is satisfied.
+
+\textbf{Stage 1 --- Profile, do not guess.} For each benchmark the agent must run
+\texttt{ncu} and extract SpeedOfLight (Compute\% vs.\ Memory\%), achieved vs.\
+theoretical occupancy, waves/SM, L2 hit rate, and warp-stall reasons. ``Looks
+slow'' is rejected as a reason; a metric must be cited.
+
+\textbf{Stage 2 --- Classify the bottleneck.} The agent labels each kernel as
+memory-, compute-, latency/occupancy-, or atomic-contention-bound, using one
+rule: high Memory\%~$\Rightarrow$ widen loads / coalesce / cut redundant traffic;
+high Compute\%~$\Rightarrow$ fewer instructions, \texttt{\_\_shfl} reductions,
+fast intrinsics; both low~$\Rightarrow$ raise occupancy or cut launch/sync
+overhead; high atomic traffic~$\Rightarrow$ warp-aggregate then one atomic.
+
+\textbf{Stage 3 --- Optimize to match the bottleneck, and never increase total
+work.} After several early regressions we added an explicit guardrail to the
+prompt: \emph{prefer changes that remove waste (idle blocks, redundant loads,
+host round-trips) over changes that add work to gain parallelism}. This single
+instruction was the most important iteration on the agent (Appendix~D).
+
+\textbf{Stage 4 --- Verify before claiming.} Every change must pass the program's
+own check (or a CPU reference the agent writes) \emph{before} a speedup is
+reported; a faster-but-wrong kernel is treated as a failure. The agent also
+records \emph{rejected} experiments, not just successes.
+
+We iterated the prompt three times: v1 (free-form ``optimize'') produced confident
+but slower code; v2 added the profile-first requirement; v3 added the
+no-extra-work guardrail and the correctness-gate-before-claim rule. All reported
+numbers are from v3.
+
+%------------------------------------------------------------------------------
+\section{Experimental Setup}
+\label{sec:setup}
+\textbf{Hardware/software.} One NVIDIA Tesla V100-SXM2-32GB (Volta, sm\_70, 80 SM,
+$\approx$900\,GB/s), CUDA~12.3, built \texttt{make ARCH=sm\_70}. Jobs run on a
+dedicated GPU compute node via Slurm with a single pinned device
+(\texttt{CUDA\_VISIBLE\_DEVICES=0}); running on the shared login node was found to
+make timings drift by up to 2$\times$ and was abandoned.
+
+\textbf{Metric.} Each program's own printed per-kernel/stage time (not wall time).
+This is an average-per-launch figure, independent of the repeat count.
+
+\textbf{Comparison.} Baseline and optimized are built with the \emph{same}
+CUDA~12.3 compiler and run back-to-back; speedup $=$ baseline\,/\,optimized. We
+report the median of 5 runs. Comparison arguments are taken from what the baseline
+actually ran (which is not always the Makefile \texttt{run:} target; e.g.\
+\texttt{convolution3D} runs two real conv layers).
+
+\textbf{Correctness / success criterion.} A benchmark counts as a \emph{success}
+only if it (i) passes the program's built-in verification (or a byte-identical
+output/CPU-reference check for programs without one) \emph{and} (ii) achieves
+$\geq$1.05$\times$ speedup. $0.95$--$1.05\times$ with correctness preserved is
+``no measurable change''; $<0.95\times$ is a \emph{regression}; a wrong result is
+a \emph{failure} regardless of speed.
+
+%------------------------------------------------------------------------------
+\section{Results}
+Across 30 benchmarks: \textbf{14 confirmed speedups}, \textbf{9 analyzed as
+already near-optimal} (left bit-identical with a profiling-grounded reason),
+\textbf{1 near-noise / neutral} (jaccard, reverted to baseline after a regressing
+attempt), \textbf{1 regression retained for analysis} (histogram),
+\textbf{2 reduction/scan kernels at the bandwidth ceiling} (atomicReduction not
+modified; scan measured at 1.01$\times$), and \textbf{3 skipped} for missing input
+data (hotspot, hotspot3D, sobel). Table~\ref{tab:wins} lists the confirmed
+speedups grouped by the bottleneck the profiler identified.
+
+\begin{table}[t]
+\caption{Confirmed speedups (V100, CUDA 12.3, same-compiler baseline).}
+\label{tab:wins}
+\centering
+\footnotesize
+\begin{tabularx}{\columnwidth}{@{}l r X@{}}
+\toprule
+\textbf{Benchmark} & \textbf{Speedup} & \textbf{Bottleneck $\rightarrow$ optimization} \\
+\midrule
+xsbench        & 5.90$\times$ & mem-latency $\rightarrow$ sort lookups by energy for L2 locality \\
+floydwarshall  & 5.43$\times$ & launch count $\rightarrow$ blocked 3-phase Floyd--Warshall \\
+bilateral      & 2.8--3.0$\times$ & compute (expf) $\rightarrow$ const-mem table + \texttt{\_\_expf} + interior fast-path \\
+nbody          & 2.00$\times$ & occupancy 12\% $\rightarrow$ shared float4 tiling + parallel energy reduction \\
+snake          & 1.97$\times$ & instruction count $\rightarrow$ constant-time bit-mask construction \\
+all-pairs (k2/k3) & 1.81$\times$ & redundant work $\rightarrow$ exploit matrix symmetry \\
+gaussian       & 1.72$\times$ & idle blocks $\rightarrow$ shrink grid to live submatrix each step \\
+miniWeather    & 1.67$\times$ & host overhead $\rightarrow$ on-device (D2D) single-rank halo \\
+convolution3D  & 1.33--1.69$\times$ & compute/instr $\rightarrow$ shared filter slice + compile-time-$K$ unroll \\
+thomas         & 1.21$\times$ & redundant FP/loads $\rightarrow$ register-carry CSE in sweep \\
+jacobi         & 1.18$\times$ & per-iter D2H sync $\rightarrow$ check convergence every 100 iters \\
+convolution1D  & 1.17--1.39$\times$ & int16 instr-overhead $\rightarrow$ coalesced interior fast-path \\
+lavaMD         & 1.15$\times$ & compute (double exp) $\rightarrow$ register accum + \texttt{\_\_expf} \\
+srad           & 1.06$\times$ & 39\% reduce $\rightarrow$ sequential-addressing reduction \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[t]
+\caption{Analyzed as already near-optimal; left unchanged with a reason.}
+\label{tab:nochange}
+\centering
+\footnotesize
+\begin{tabularx}{\columnwidth}{@{}l X@{}}
+\toprule
+\textbf{Benchmark} & \textbf{Why no equivalence-preserving win exists} \\
+\midrule
+atomicReduction & vectorized v4 already 863/900\,GB/s ($\approx$96\% roofline) \\
+heat            & 88\% DRAM, naive 5-point already bandwidth-saturated \\
+convolutionSeparable & NVIDIA-tuned; conv\_cols 83.5\% DRAM, occ 96.5\% \\
+stencil3d       & 60\% DRAM streaming coefficients (no reuse); forcing occ spills \\
+laplace3d       & 61\% DRAM; limited by partial-wave tail (1.6 waves) \\
+fdtd3d          & problem too small: 0.35 waves, DRAM 32\%/SM 30\% both idle \\
+filter          & already memory-bound (66\%); fewer atomics off critical path \\
+bscan           & only single-warp ($N{=}32$) case has slack; negligible vs.\ total \\
+scan            & 78\% SM / 87\% mem already; grid-fill gives 1.01$\times$ (noise) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The wins cluster by \emph{mechanism}, not by application: the largest came from
+algorithm/access-pattern changes (xsbench energy-sort, blocked Floyd--Warshall,
+nbody tiling), the mid-range from removing structural waste (gaussian idle blocks,
+miniWeather host round-trips, jacobi per-iteration syncs), and the small ones from
+instruction-level cleanups (thomas CSE, convolution fast-paths). Every kernel
+already at a memory or compute roofline (Table~\ref{tab:nochange}) yielded no
+honest speedup, exactly as the profiler predicted.
+
+%------------------------------------------------------------------------------
+\section{Discussion and Analysis}
+The failures are the most informative part of the study. Every case where the
+agent first made code \emph{slower} shares one root cause: an optimization that
+added total work or overhead to chase a metric, instead of removing waste. The
+profiler is what ultimately revealed each mistake.
+
+\textbf{thomas (PCR attempt, 0.55$\times$).} The agent saw 9.95\% occupancy and
+parallelized one tridiagonal system across a 1024-thread block using Parallel
+Cyclic Reduction. PCR replaced a barrier-free, register-only serial sweep with
+$\sim$20 block barriers and 48\,KB of shared memory per system. \emph{Root cause:}
+occupancy was low but the SMs were not idle --- each thread was busy with a 1024-step
+serial chain --- so adding synchronization cost more than the extra parallelism
+returned. The agent reverted to the baseline algorithm and instead removed
+redundant work (a recomputed denominator and repeated global loads), yielding a
+safe 1.21$\times$.
+
+\textbf{gaussian (fusion attempt, 0.85$\times$).} Fusing the pivot kernel into the
+update kernel made every column thread recompute the same division
+$a[\text{row}][t]/a[t][t]$, $\sim$4096$\times$ redundantly. \emph{Root cause:} the
+saved kernel-launch overhead was far smaller than the duplicated arithmetic.
+Re-aimed at the real waste --- a fixed full-size grid that launches blocks which
+immediately return once the active submatrix shrinks --- shrinking the grid each
+step gave 1.72$\times$ with the kernels left byte-identical.
+
+\textbf{jaccard (binary-search attempt, 0.74$\times$).} To use the 7/8 idle lanes,
+the agent replaced a two-pointer set-intersection ($O(N_i{+}N_j)$) with per-lane
+binary search ($O(N_i\log N_j)$). \emph{Root cause:} spreading work over 8 lanes
+does not pay for asymptotically \emph{more} total work; the baseline algorithm was
+already efficient. Correctly parallelizing a two-pointer merge without adding work
+is hard, so the agent reverted --- a legitimate ``no change'' outcome.
+
+\textbf{histogram (grid-fill attempt, 0.52$\times$, retained).} The first kernel ran
+at 20\% occupancy, so the agent enlarged the grid to fill the device. But more
+blocks produce more partial histograms, and the \emph{second} (merge) kernel's
+reduction loop grows with the number of partials. \emph{Root cause:} a two-stage
+pipeline was optimized by looking only at stage one; the added merge cost exceeded
+the occupancy gain. We retain this regression in the report as the clearest example
+of a local metric (occupancy) misleading a global outcome.
+
+\textbf{Rejected micro-optimizations.} A 128-bit vectorized
+\texttt{convolution1D} regressed to 0.28$\times$ because the halo loads became
+uncoalesced --- breaking coalescing cost far more than the redundant overlapped
+reads it removed. A mirrored-atomic triangular variant of all-pairs k1 regressed
+from atomic contention. Larger NW tiles and a fused/queue BFS frontier likewise
+regressed. In every case the profiler explained why.
+
+\textbf{Where the agent succeeded without prompting tricks.} The agent reliably
+recognized roofline-bound kernels (Table~\ref{tab:nochange}) and chose
+\emph{not} to change them --- an important behaviour, since a less disciplined
+agent would have ``optimized'' a bandwidth-saturated stencil and reported noise as
+a win. The profile-first prompt, plus the no-extra-work guardrail added in v3, were
+what turned confident-but-wrong behaviour into measured, correctness-gated
+results.
+
+\textbf{Limitations.} Speedups are single-GPU, single-input, and median-of-5; we
+do not report confidence intervals. Three benchmarks could not be run for lack of
+data. The agent's correctness checks reuse
+each program's own (sometimes weak) self-test; for programs without one we relied
+on byte-identical output or a CPU reference the agent wrote.
+
+%------------------------------------------------------------------------------
+\section{Conclusion}
+Driven by a strict profile-classify-optimize-verify prompt, an AI coding agent
+optimized a 30-benchmark CUDA suite with results comparable to careful manual
+tuning: 14 confirmed speedups (up to 5.9$\times$), 8 correctly-diagnosed
+near-optimal kernels left untouched, and a small number of regressions that the
+agent --- and the profiler --- ultimately caught and corrected. The decisive
+prompt-engineering lesson is a single rule: \emph{remove waste, do not add work};
+without it the agent confidently produced slower code. The failures, analyzed by
+root cause, show that the hard part of GPU optimization is not generating a
+plausible change but knowing when a change that ``increases parallelism'' will
+backfire --- a judgement that requires profiler evidence, which an agent can be
+prompted to demand of itself.
+
+%------------------------------------------------------------------------------
+\begin{thebibliography}{00}
+\bibitem{hecbench} Z.\ Jin and J.\ S.\ Vetter, ``HeCBench: A Benchmark Suite for
+Heterogeneous Computing,'' Oak Ridge National Laboratory.
+\url{https://github.com/ORNL/HeCBench}.
+\bibitem{ncu} NVIDIA, ``Nsight Compute,'' CUDA Toolkit 12.3 documentation, 2023.
+\bibitem{v100} NVIDIA, ``Tesla V100 GPU Architecture (Volta) Whitepaper,'' 2017.
+\bibitem{harris} M.\ Harris and M.\ Garland, ``Optimizing Parallel Prefix
+Operations for the Fermi Architecture,'' in \emph{GPU Computing Gems Jade
+Edition}, 2012.
+\end{thebibliography}
+
+\xdef\mainbodyendpage{\thepage}
+
+%==============================================================================
+%  APPENDIX -- REQUIRED RAW MATERIALS (Category B)
+%==============================================================================
+\appendices
+
+\section{Input Prompt (representative)}
+\begin{lstlisting}
+Data Compression / Reduction: histogram, scan, filter,
+atomicReduction, bscan
+Math: jacobi, gaussian, thomas, jaccard
+These are the benchmarks I want to optimize; I want to beat
+the benchmark. I need a workflow: bottleneck analysis ->
+optimize. How to do bottleneck analysis -- use a profiler?
+
+[follow-up, iterated over the session]
+- pull the needed benchmarks from ORNL/HeCBench
+- profile all first, then prioritize
+- one benchmark at a time; record what each profile showed
+  and what optimization was applied, then present results
+- judge with the same compiler for baseline and optimized
+  (do not let a newer nvcc give the baseline a free speedup)
+\end{lstlisting}
+
+\section{System Prompt (enforced workflow, paraphrased)}
+\begin{lstlisting}
+For each benchmark, do NOT skip steps:
+1. PROFILE with ncu. Record Compute% vs Memory% (SpeedOfLight),
+   achieved/theoretical occupancy, waves/SM, L2 hit, warp-stall
+   reasons. "Looks slow" is not a reason; cite a metric.
+2. CLASSIFY: memory- / compute- / latency-occupancy- / atomic-
+   bound. Pick the matching lever:
+     memory  -> wider/coalesced loads, cut redundant traffic
+     compute -> fewer instr, __shfl reductions, fast intrinsics
+     latency -> raise occupancy OR cut launch/sync overhead
+     atomic  -> warp-aggregate (ballot+popc) then one atomic
+3. OPTIMIZE, but PREFER REMOVING WASTE over ADDING WORK.
+   Never increase total work to gain parallelism.
+4. VERIFY against the program's own check (or a CPU reference)
+   BEFORE reporting any speedup. A fast-but-wrong kernel is a
+   failure. Record rejected experiments too.
+Measure on a dedicated GPU node, single pinned device, same
+CUDA version for baseline and optimized, median of 5 runs.
+\end{lstlisting}
+
+\section{Representative Agent Output (excerpt)}
+\begin{lstlisting}
+thomas ncu: Duration 2.45ms, Compute 4%, Memory 55%,
+Occupancy 9.95%, Waves/SM 0.18 -> GPU under-filled but each
+thread is busy (M=1024 serial sweep), memory already coalesced.
+Attempt 1 (PCR, 1 block/system): 20 barriers + 48KB smem ->
+0.55x (SLOWER). Reverted.
+Final: register-carry CSE (denominator once, carry U/RHS in
+registers). CPU-verified bit-exact for M in {2..1024}.
+Result: baseline 1.180ms / optimized 0.975ms -> 1.21x. PASS.
+\end{lstlisting}
+
+\section{Changes Made to the Agent}
+The agent's guidance was iterated three times. v1 (free-form ``optimize this'')
+produced confident but slower kernels (thomas PCR, gaussian fusion, jaccard
+binary search). v2 added the mandatory \emph{profile-first / cite-a-metric} rule,
+which stopped guess-driven changes. v3 added two rules that fixed the remaining
+regressions: (i) \emph{prefer removing waste over adding work; never increase
+total work to gain parallelism}, and (ii) \emph{a speedup may be reported only
+after correctness passes}. We also added a same-compiler comparison harness and a
+dedicated-node Slurm submission, after discovering that login-node timings and
+mismatched \texttt{nvcc} versions both produced misleading speedups. Full
+per-benchmark records (profile, attempts, code, correctness) are in the project
+repository under \texttt{math\_data\_compress/profiling/} and
+\texttt{optimized/}.
+
+\end{document}
