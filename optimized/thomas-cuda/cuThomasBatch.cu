@@ -31,7 +31,15 @@
 
 // One block solves one tridiagonal system of M equations via PCR.
 //   blockDim.x == M, gridDim.x == BATCHCOUNT.
-// Shared memory: 4 doubles per equation, double-buffered = 8*M doubles.
+//
+// Shared memory: 6*M doubles (NOT 8*M). The diagonal d and the RHS need
+// double-buffering (their new value at i depends on old neighbors at i±delta),
+// but l and u are updated IN PLACE: every thread reads its neighbors' OLD l/u,
+// computes its new l/u into registers, then a __syncthreads() guarantees all
+// reads finished before any thread overwrites its own l[i]/u[i]. 6*M*8 = 48KB
+// for M=1024, which fits the default shared-memory limit, so NO
+// cudaFuncSetAttribute / large-carveout opt-in is needed. Verified on CPU to
+// match serial Thomas to <=2.2e-16 (see profiling/optimization/thomas-cuda).
 __global__ void cuThomasBatchPCR(const double *__restrict__ L,
                                  const double *__restrict__ D,
                                  const double *__restrict__ U,
@@ -40,16 +48,12 @@ __global__ void cuThomasBatchPCR(const double *__restrict__ L,
                                  const int BATCHCOUNT)
 {
   extern __shared__ double smem[];
-  // current buffers
-  double *sl = smem;            // [M]
-  double *sd = sl + M;          // [M]
-  double *su = sd + M;          // [M]
-  double *sr = su + M;          // [M]
-  // ping-pong buffers for the updated coefficients
-  double *sl2 = sr + M;         // [M]
-  double *sd2 = sl2 + M;        // [M]
-  double *su2 = sd2 + M;        // [M]
-  double *sr2 = su2 + M;        // [M]
+  double *sl = smem;            // [M]  l, updated in place
+  double *su = sl + M;          // [M]  u, updated in place
+  double *sd = su + M;          // [M]  d, ping-pong
+  double *sr = sd + M;          // [M]  rhs, ping-pong
+  double *sd2 = sr + M;         // [M]  d  next buffer
+  double *sr2 = sd2 + M;        // [M]  rhs next buffer
 
   const int sys = blockIdx.x;
   if (sys >= BATCHCOUNT) return;
@@ -60,14 +64,14 @@ __global__ void cuThomasBatchPCR(const double *__restrict__ L,
   // Consecutive systems (sys, sys+1) are adjacent -> coalesced across blocks.
   const long gi = (long)i * BATCHCOUNT + sys;
   sl[i] = L[gi];
-  sd[i] = D[gi];
   su[i] = U[gi];
+  sd[i] = D[gi];
   sr[i] = RHS[gi];
   __syncthreads();
 
   // PCR: double the reach each step until it spans the whole system.
   for (int delta = 1; delta < M; delta <<= 1) {
-    double dl = sl[i], dd = sd[i], du = su[i], dr = sr[i];
+    double dl = sl[i], du = su[i], dd = sd[i], dr = sr[i];
 
     double k1 = 0.0, k2 = 0.0;
     if (i - delta >= 0)   k1 = dl / sd[i - delta];
@@ -85,15 +89,14 @@ __global__ void cuThomasBatchPCR(const double *__restrict__ L,
       nu  = -su[i + delta] * k2;
     }
 
-    __syncthreads();           // all reads of the old buffer are done
-    sl2[i] = nl; sd2[i] = nd; su2[i] = nu; sr2[i] = nr;
-    __syncthreads();           // updated buffer visible to all
+    __syncthreads();              // all reads of old l/u/d/r are done
+    sl[i] = nl; su[i] = nu;       // l, u overwritten in place (safe after barrier)
+    sd2[i] = nd; sr2[i] = nr;     // d, rhs to the next buffer
+    __syncthreads();              // updated values visible to all
 
-    // swap current <- updated
+    // swap current <- updated for the ping-pong arrays
     double *t;
-    t = sl; sl = sl2; sl2 = t;
     t = sd; sd = sd2; sd2 = t;
-    t = su; su = su2; su2 = t;
     t = sr; sr = sr2; sr2 = t;
   }
 
@@ -101,22 +104,13 @@ __global__ void cuThomasBatchPCR(const double *__restrict__ L,
   RHS[gi] = sr[i] / sd[i];
 }
 
-// Host launcher kept in THIS translation unit so that taking the address of the
-// __global__ cuThomasBatchPCR (for cudaFuncSetAttribute) happens where the kernel
-// is defined. Taking a __global__'s address from another .cu under whole-program
-// compilation produces an "undefined reference" at link time; launching it via
-// <<<>>> from the same TU avoids needing -rdc=true.
+// Host launcher in the same TU as the kernel. With 6*M doubles (<=48KB at
+// M=1024) the kernel fits the default shared-memory limit, so we neither set a
+// shared-memory attribute nor take the kernel's address (both of which caused
+// link/overload errors). Just a plain dynamic-shared-memory launch.
 void launchThomasPCR(const double *L, const double *D, double *U, double *RHS,
                      int M, int BATCHCOUNT, size_t smem_bytes)
 {
-  // Take the kernel address through an explicitly-typed function pointer so the
-  // compiler resolves the single definition (avoids the "more than one instance
-  // of overloaded function" error when passing the bare __global__ name).
-  void (*kptr)(const double *, const double *, double *, double *, int, int) =
-      &cuThomasBatchPCR;
-  cudaFuncSetAttribute((const void *)kptr,
-                       cudaFuncAttributeMaxDynamicSharedMemorySize,
-                       (int)smem_bytes);
   cuThomasBatchPCR<<<BATCHCOUNT, M, smem_bytes>>>(L, D, U, RHS, M, BATCHCOUNT);
 }
 

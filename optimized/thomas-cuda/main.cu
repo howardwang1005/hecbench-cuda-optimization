@@ -156,31 +156,27 @@ int main(int argc, char const *argv[])
   // Optimized launch: Parallel Cyclic Reduction, one block per system.
   //   grid  = N blocks (one per system) -> fills the GPU
   //   block = M threads (one per equation)
-  //   smem  = 8 * M doubles (4 coefficient arrays, double-buffered)
+  //   smem  = 6 * M doubles (d,rhs double-buffered; l,u updated in place)
   // BlockSize from argv is intentionally ignored; PCR needs blockDim == M.
-  const size_t pcr_smem = (size_t)8 * M * sizeof(double);
+  const size_t pcr_smem = (size_t)6 * M * sizeof(double);
 
   // This PCR variant maps one thread per equation, so it needs M <= maxThreads
-  // per block and 8*M doubles of shared memory per block.
+  // per block and 6*M doubles of shared memory per block (48KB at M=1024, which
+  // fits the default limit -> no large-carveout opt-in required).
   {
     int dev = 0; cudaGetDevice(&dev);
-    int maxThreads = 0, maxSmemOptin = 0;
+    int maxThreads = 0, maxSmemBlock = 0;
     cudaDeviceGetAttribute(&maxThreads, cudaDevAttrMaxThreadsPerBlock, dev);
-    cudaDeviceGetAttribute(&maxSmemOptin,
-                           cudaDevAttrMaxSharedMemoryPerBlockOptin, dev);
-    if (M > maxThreads || pcr_smem > (size_t)maxSmemOptin) {
+    cudaDeviceGetAttribute(&maxSmemBlock,
+                           cudaDevAttrMaxSharedMemoryPerBlock, dev);
+    if (M > maxThreads || pcr_smem > (size_t)maxSmemBlock) {
       fprintf(stderr,
-              "PCR solver supports M <= %d and 8*M*8 <= %d bytes; "
+              "PCR solver supports M <= %d and 6*M*8 <= %d bytes; "
               "got M=%d (smem=%zu). Use a smaller system size.\n",
-              maxThreads, maxSmemOptin, M, pcr_smem);
+              maxThreads, maxSmemBlock, M, pcr_smem);
       return -1;
     }
   }
-
-  // 8*M doubles can exceed the 48KB default cap (M=1024 -> 64KB); the launcher
-  // opts in to the larger dynamic shared-memory carveout (up to 96KB/block on
-  // V100). The launcher lives in cuThomasBatch.cu so the kernel's address is
-  // never taken across translation units (avoids a link-time undefined reference).
 
   cudaDeviceSynchronize();
   start = std::chrono::steady_clock::now();
