@@ -27,13 +27,13 @@ ONLY="${ONLY:-thomas gaussian jaccard bscan scan histogram filter jacobi}"
 
 # name | dir-suffix | run args   (args match the profiling run exactly)
 read -r -d '' BENCHES <<'EOF'
-thomas    thomas-cuda    1024 16384 64 100
+thomas    thomas-cuda    1024 16384 64 10
 gaussian  gaussian-cuda  -q -t -s 4096
-jaccard   jaccard-cuda   1024 512 1000
-bscan     bscan-cuda     1000
+jaccard   jaccard-cuda   1024 512 10
+bscan     bscan-cuda     10
 scan      scan-cuda      268435456 10
-histogram histogram-cuda --i=100
-filter    filter-cuda    100000000 256 100
+histogram histogram-cuda --i=10
+filter    filter-cuda    100000000 256 10
 jacobi    jacobi-cuda
 EOF
 
