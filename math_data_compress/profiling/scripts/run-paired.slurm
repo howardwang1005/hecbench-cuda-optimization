@@ -24,9 +24,18 @@
 set -u
 
 echo "host=$(hostname)  job=$SLURM_JOB_ID  partition=$SLURM_JOB_PARTITION"
-module load cuda            # CUDA 12.x; official baseline used 12.3
+
+# Pin CUDA to the SAME version as the official baseline (12.3) so the locally
+# rebuilt baseline and the optimized binaries share one compiler. This makes
+# vs_local an apples-to-apples algorithm comparison (different nvcc versions
+# would otherwise give the baseline a free speedup and hide regressions).
+# NOTE: adjust the module name to whatever `module avail cuda` lists, e.g.
+#   cuda/12.3 | cuda/12.3.0 | nvidia/cuda/12.3
+module purge
+module load cuda/12.3 || { echo "ERROR: cuda/12.3 module not found; run 'module avail cuda'"; exit 1; }
 export CUDA_VISIBLE_DEVICES=0   # single card, like the official run
 
+echo "nvcc in use:"; nvcc --version | grep release
 nvidia-smi --query-gpu=name,compute_cap,clocks.max.sm,driver_version --format=csv,noheader
 
 # 5 repeats + medians, matching the official 5-run methodology.
