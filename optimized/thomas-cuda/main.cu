@@ -177,17 +177,16 @@ int main(int argc, char const *argv[])
     }
   }
 
-  // 8*M doubles can exceed the 48KB default cap (M=1024 -> 64KB); opt in to the
-  // larger dynamic shared-memory carveout on V100 (up to 96KB/block).
-  cudaFuncSetAttribute(cuThomasBatchPCR,
-                       cudaFuncAttributeMaxDynamicSharedMemorySize,
-                       (int)pcr_smem);
+  // 8*M doubles can exceed the 48KB default cap (M=1024 -> 64KB); the launcher
+  // opts in to the larger dynamic shared-memory carveout (up to 96KB/block on
+  // V100). The launcher lives in cuThomasBatch.cu so the kernel's address is
+  // never taken across translation units (avoids a link-time undefined reference).
 
   cudaDeviceSynchronize();
   start = std::chrono::steady_clock::now();
 
   for (int n = 0; n < repeat; n++) {
-    cuThomasBatchPCR<<<N, M, pcr_smem>>>(l_device, d_device, u_device, rhs_device, M, N);
+    launchThomasPCR(l_device, d_device, u_device, rhs_device, M, N, pcr_smem);
   }
 
   cudaDeviceSynchronize();
