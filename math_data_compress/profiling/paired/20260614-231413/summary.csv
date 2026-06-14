@@ -1,0 +1,16 @@
+benchmark,variant,metric,unit,value
+histogram,official_baseline,kernel_time,us,184.4
+histogram,local_baseline,kernel_time,us,201.427
+histogram,optimized,kernel_time,us,387.994
+histogram,speedup_vs_official,ratio,x,0.48x
+histogram,speedup_vs_local,ratio,x,0.52x
+filter,official_baseline,kernel_time,ms,0.958458
+filter,local_baseline,kernel_time,ms,0.522386
+filter,optimized,kernel_time,ms,0.528011
+filter,speedup_vs_official,ratio,x,1.82x
+filter,speedup_vs_local,ratio,x,0.99x
+jacobi,official_baseline,kernel_time,s,0.0000738951
+jacobi,local_baseline,kernel_time,s,4.02203e-05
+jacobi,optimized,kernel_time,s,3.41459e-05
+jacobi,speedup_vs_official,ratio,x,2.16x
+jacobi,speedup_vs_local,ratio,x,1.18x

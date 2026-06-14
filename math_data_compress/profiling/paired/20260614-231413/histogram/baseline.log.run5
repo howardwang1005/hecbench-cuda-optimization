@@ -1,0 +1,34 @@
+Random image: entropy-reduction(0) width(1920) height(1080)
+
+1 channel uchar1 tests (256-bin):
+
+Shared memory atomics 	PASS
+Avg time 41.942 us (10 iterations)
+Global memory atomics 	PASS
+Avg time 83.568 us (10 iterations)
+Timings (us):
+	 41.942 smem atomics (49.439 GB/s, 120.583% peak)
+	 83.568 gmem atomics (24.813 GB/s, 60.520% peak)
+
+3/4 channel uchar4 tests (256-bin):
+
+Shared memory atomics 	PASS
+Avg time 71.370 us (10 iterations)
+Global memory atomics 	PASS
+Avg time 218.979 us (10 iterations)
+Timings (us):
+	 71.370 smem atomics (116.218 GB/s, 283.457% peak)
+	 218.979 gmem atomics (37.878 GB/s, 92.384% peak)
+
+3/4 channel float4 tests (256-bin):
+
+Shared memory atomics 	PASS
+Avg time 88.269 us (10 iterations)
+Global memory atomics 	PASS
+Avg time 223.658 us (10 iterations)
+Timings (us):
+	 88.269 smem atomics (375.870 GB/s, 916.756% peak)
+	 223.658 gmem atomics (148.341 GB/s, 361.807% peak)
+
+
+
