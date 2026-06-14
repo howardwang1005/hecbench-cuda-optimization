@@ -41,8 +41,7 @@ int main(int argc, char const *argv[])
 
   const int M = std::stoi(argv[1]);
   const int N = std::stoi(argv[2]);
-  const int BlockSize = std::stoi(argv[3]);  // GPU thread block size (PCR uses blockDim==M)
-  (void)BlockSize;                           // kept for CLI compatibility; unused by PCR
+  const int BlockSize = std::stoi(argv[3]);  // GPU thread block size
   const int repeat = std::stoi(argv[4]);
 
   const size_t matrix_size = (size_t)M * N;
@@ -153,39 +152,11 @@ int main(int argc, char const *argv[])
   cudaMemcpy(d_device, d_Thomas_host, matrix_size_bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(rhs_device, rhs_Thomas_host, matrix_size_bytes, cudaMemcpyHostToDevice);
 
-  // Optimized launch: Parallel Cyclic Reduction, one block per system.
-  //   grid  = N blocks (one per system) -> fills the GPU
-  //   block = M threads (one per equation)
-  //   smem  = 6 * M doubles (d,rhs double-buffered; l,u updated in place)
-  // BlockSize from argv is intentionally ignored; PCR needs blockDim == M.
-  const size_t pcr_smem = (size_t)6 * M * sizeof(double);
-
-  // This PCR variant maps one thread per equation, so it needs M <= maxThreads
-  // per block and 6*M doubles of shared memory per block (48KB at M=1024, which
-  // fits the default limit -> no large-carveout opt-in required).
-  {
-    int dev = 0; cudaGetDevice(&dev);
-    int maxThreads = 0, maxSmemBlock = 0;
-    cudaDeviceGetAttribute(&maxThreads, cudaDevAttrMaxThreadsPerBlock, dev);
-    cudaDeviceGetAttribute(&maxSmemBlock,
-                           cudaDevAttrMaxSharedMemoryPerBlock, dev);
-    if (M > maxThreads || pcr_smem > (size_t)maxSmemBlock) {
-      fprintf(stderr,
-              "PCR solver supports M <= %d and 6*M*8 <= %d bytes; "
-              "got M=%d (smem=%zu). Use a smaller system size.\n",
-              maxThreads, maxSmemBlock, M, pcr_smem);
-      return -1;
-    }
-  }
-
   cudaDeviceSynchronize();
   start = std::chrono::steady_clock::now();
 
   for (int n = 0; n < repeat; n++) {
-    // Launch directly from main.cu (the same pattern the baseline uses for
-    // cuThomasBatch): kernel defined in cuThomasBatch.cu, launched here via the
-    // header declaration. 6*M doubles <= 48KB so no smem opt-in is needed.
-    cuThomasBatchPCR<<<N, M, pcr_smem>>>(l_device, d_device, u_device, rhs_device, M, N);
+    cuThomasBatch<<<(N/BlockSize)+1, BlockSize>>>(l_device, d_device, u_device, rhs_device, M, N);
   }
 
   cudaDeviceSynchronize();
