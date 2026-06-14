@@ -14,6 +14,7 @@
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 % Set PDF metadata explicitly so hyperref does not try to parse the
 % multi-line \title (the \\ and \footnotesize otherwise trigger a
@@ -39,6 +40,8 @@
   keepspaces=true
 }
 
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
 \begin{document}
 
 \title{Profiling-Guided CUDA Optimization of 30 HeCBench
@@ -51,7 +54,7 @@ Benchmarks with an AI Coding Agent\\
 %          (e.g. xeCJK with XeLaTeX) and substitute them.
 \author{%
 \IEEEauthorblockN{Hao-Ping Wang, Po-Yu Tseng, Shan-Kai Wu}
-\IEEEauthorblockA{r14922119, \enspace r14922031, \enspace r14922000 \\
+\IEEEauthorblockA{r14922119, \enspace r14922031, \enspace r14922146 \\
 National Taiwan University}%
 }
 
@@ -68,11 +71,11 @@ or atomic-contention), and only then (3) apply a bottleneck-matched optimization
 verifying numerical correctness against the original program before reporting any
 speedup. All builds and timings use one NVIDIA V100 with CUDA~12.3, comparing the
 agent's code against the unmodified baseline compiled by the \emph{same} compiler.
-Of 30 benchmarks, the agent produced confirmed speedups on 14 (best cases:
+Of 30 benchmarks, the agent produced confirmed speedups on 15 (best cases:
 xsbench 5.90$\times$, Floyd--Warshall 5.43$\times$, bilateral 2.9$\times$,
-nbody 2.0$\times$), correctly identified 8 as already near a hardware roofline and
-left them unchanged, regressed on a few before self-correcting, and could not run
-3 for lack of input data. The most instructive results are the failures: we give a
+nbody 2.0$\times$), found no measurable improvement on 11, retained one regression
+for analysis, and could not run 3 for lack of input data. The most instructive
+results are the failures: we give a
 profiling-grounded root-cause analysis of every case where an ``obvious''
 optimization made the code slower, which is the central lesson of the project.
 \end{abstract}
@@ -84,7 +87,6 @@ roofline analysis.
 
 \vspace{0.5em}
 \noindent\fbox{\parbox{0.97\columnwidth}{\textbf{Project Category:}\quad
-$\square$~\textbf{A} (Self-chosen topic)\qquad
 $\boxtimes$~\textbf{B} (AI-agent code optimization)\\[2pt]
 \footnotesize AI-agent code optimization of an existing benchmark suite.}}
 
@@ -112,17 +114,13 @@ where naive ``parallelize harder'' reasoning breaks down.
 \textbf{Benchmark and dataset.}
 HeCBench~\cite{hecbench} is a large open suite of heterogeneous-computing kernels.
 We use 30 of its CUDA programs, chosen to cover distinct bottleneck
-\emph{classes} rather than one application area: reduction/scan/compaction
-(\texttt{scan}, \texttt{bscan}, \texttt{atomicReduction}, \texttt{filter},
-\texttt{histogram}), linear solvers (\texttt{thomas}, \texttt{gaussian}),
-stencils (\texttt{jacobi}, \texttt{heat}, \texttt{laplace3d}, \texttt{stencil3d},
-\texttt{fdtd3d}, \texttt{hotspot}/\texttt{hotspot3D}), convolution
-(\texttt{convolution1D/3D}, \texttt{convolutionSeparable}, \texttt{sobel},
-\texttt{bilateral}), graph/DP (\texttt{bfs}, \texttt{nw}, \texttt{floydwarshall},
-\texttt{snake}, \texttt{all-pairs-distance}, \texttt{jaccard}), and
-simulation/MC (\texttt{nbody}, \texttt{lavaMD}, \texttt{xsbench},
-\texttt{miniWeather}, \texttt{srad}). Each program ships its own input generator
-or data file and its own self-check, which we reuse. Three programs
+\emph{classes} rather than one application area: five reduction/compaction
+programs, two linear solvers, seven stencils, five convolutions, six graph or
+dynamic-programming workloads, and five simulation or Monte-Carlo programs.
+The set includes both compact kernels such as scan and histogram and
+application-scale workloads such as XSBench, miniWeather, and $N$-body.
+We reuse the available input generators and built-in checks, adding output or
+CPU-reference comparisons when a program has no self-check. Three programs
 (\texttt{hotspot}, \texttt{hotspot3D}, \texttt{sobel}) require external input
 files not present in the distribution (only DVC pointer stubs were available), so
 they are reported as \emph{skipped}.
@@ -190,10 +188,18 @@ make timings drift by up to 2$\times$ and was abandoned.
 This is an average-per-launch figure, independent of the repeat count.
 
 \textbf{Comparison.} Baseline and optimized are built with the \emph{same}
-CUDA~12.3 compiler and run back-to-back; speedup $=$ baseline\,/\,optimized. We
-report the median of 5 runs. Comparison arguments are taken from what the baseline
+CUDA~12.3 compiler; speedup $=$ baseline\,/\,optimized. We use five-run medians
+where repeated paired runs are available, and otherwise report the paired
+measurement or measured range recorded by the benchmark batch. Some later
+comparisons reuse five same-environment baseline logs because the printed metric
+is already average-per-launch. Arguments are taken from what the baseline
 actually ran (which is not always the Makefile \texttt{run:} target; e.g.\
 \texttt{convolution3D} runs two real conv layers).
+
+\textbf{Team organization.} The 30 programs were split among three members as
+independent batches of 9, 5, and 16 benchmarks. Each member kept a per-benchmark
+record of profile evidence, attempted changes, correctness, and timing; this paper
+normalizes those records to the common criteria above.
 
 \textbf{Correctness / success criterion.} A benchmark counts as a \emph{success}
 only if it (i) passes the program's built-in verification (or a byte-identical
@@ -204,71 +210,71 @@ a \emph{failure} regardless of speed.
 
 %------------------------------------------------------------------------------
 \section{Results}
-Across 30 benchmarks: \textbf{14 confirmed speedups}, \textbf{9 analyzed as
-already near-optimal} (left bit-identical with a profiling-grounded reason),
-\textbf{1 near-noise / neutral} (jaccard, reverted to baseline after a regressing
-attempt), \textbf{1 regression retained for analysis} (histogram),
-\textbf{2 reduction/scan kernels at the bandwidth ceiling} (atomicReduction not
-modified; scan measured at 1.01$\times$), and \textbf{3 skipped} for missing input
-data (hotspot, hotspot3D, sobel). Table~\ref{tab:wins} lists the confirmed
-speedups grouped by the bottleneck the profiler identified.
+Across 30 benchmarks, \textbf{15 achieved confirmed speedups}, \textbf{11 had no
+measurable improvement}, \textbf{1 retained a regression for analysis}
+(histogram), and \textbf{3 were skipped} for missing input data (hotspot,
+hotspot3D, and sobel). These categories are mutually exclusive and account for
+all 30 programs. Table~\ref{tab:all-results} gives one row per benchmark using
+the metric recorded by its source report. A dash means that the source records a
+speedup or profiling decision but not an absolute baseline/optimized value.
 
-\begin{table}[t]
-\caption{Confirmed speedups (V100, CUDA 12.3, same-compiler baseline).}
-\label{tab:wins}
+\begin{table*}[!t]
+\caption{Complete 30-benchmark result summary. Speedup is baseline divided by
+optimized time unless the row explicitly uses throughput (GFLOP/s).}
+\label{tab:all-results}
 \centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{@{}l r X@{}}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.06}
+\begin{tabularx}{\textwidth}{@{}r l r r r Y@{}}
 \toprule
-\textbf{Benchmark} & \textbf{Speedup} & \textbf{Bottleneck $\rightarrow$ optimization} \\
+\textbf{\#} & \textbf{Benchmark / metric} & \textbf{Baseline} &
+\textbf{Optimized} & \textbf{Speedup} & \textbf{Status / interpretation} \\
 \midrule
-xsbench        & 5.90$\times$ & mem-latency $\rightarrow$ sort lookups by energy for L2 locality \\
-floydwarshall  & 5.43$\times$ & launch count $\rightarrow$ blocked 3-phase Floyd--Warshall \\
-bilateral      & 2.8--3.0$\times$ & compute (expf) $\rightarrow$ const-mem table + \texttt{\_\_expf} + interior fast-path \\
-nbody          & 2.00$\times$ & occupancy 12\% $\rightarrow$ shared float4 tiling + parallel energy reduction \\
-snake          & 1.97$\times$ & instruction count $\rightarrow$ constant-time bit-mask construction \\
-all-pairs (k2/k3) & 1.81$\times$ & redundant work $\rightarrow$ exploit matrix symmetry \\
-gaussian       & 1.72$\times$ & idle blocks $\rightarrow$ shrink grid to live submatrix each step \\
-miniWeather    & 1.67$\times$ & host overhead $\rightarrow$ on-device (D2D) single-rank halo \\
-convolution3D  & 1.33--1.69$\times$ & compute/instr $\rightarrow$ shared filter slice + compile-time-$K$ unroll \\
-thomas         & 1.21$\times$ & redundant FP/loads $\rightarrow$ register-carry CSE in sweep \\
-jacobi         & 1.18$\times$ & per-iter D2H sync $\rightarrow$ check convergence every 100 iters \\
-convolution1D  & 1.17--1.39$\times$ & int16 instr-overhead $\rightarrow$ coalesced interior fast-path \\
-lavaMD         & 1.15$\times$ & compute (double exp) $\rightarrow$ register accum + \texttt{\_\_expf} \\
-srad           & 1.06$\times$ & 39\% reduce $\rightarrow$ sequential-addressing reduction \\
+1  & gaussian & 245.45\,ms & 142.70\,ms & \textbf{1.72$\times$} & Win \\
+2  & thomas & 1.180\,ms & 0.975\,ms & \textbf{1.21$\times$} & Win \\
+3  & jacobi & 40.2\,$\mu$s & 34.1\,$\mu$s & \textbf{1.18$\times$} & Win \\
+4  & filter & 0.522\,ms & 0.528\,ms & 0.99$\times$ & Neutral; memory-bound \\
+5  & histogram & 201.4\,$\mu$s & 388.0\,$\mu$s & \textbf{0.52$\times$} & Regression retained for analysis \\
+6  & jaccard & 12.29\,ms & 12.30\,ms & 1.00$\times$ & Neutral; reverted to baseline algorithm \\
+7  & bscan & 2894.7\,$\mu$s & 2909.0\,$\mu$s & 1.00$\times$ & Neutral \\
+8  & atomicReduction & -- & -- & -- & Not modified; v4 reaches 863\,GB/s \\
+9  & scan & 109586.96\,$\mu$s & 108237.26\,$\mu$s & 1.01$\times$ & Neutral \\
+\midrule
+10 & all-pairs-distance (k2) & 159.199\,$\mu$s & 87.916\,$\mu$s & \textbf{1.81$\times$} & Win; k3 is 1.82$\times$ \\
+11 & nw & 21.923\,ms & 20.589\,ms & \textbf{1.06$\times$} & Win; five-run median \\
+12 & snake (thresholds 0--25) & 6956.320\,$\mu$s & 3537.590\,$\mu$s & \textbf{1.97$\times$} & Win; aggregate metric \\
+13 & bfs & 963.668\,$\mu$s & 962.199\,$\mu$s & 1.002$\times$ & Neutral; measurement noise \\
+14 & floydwarshall & 9.815\,ms & 1.806\,ms & \textbf{5.43$\times$} & Win \\
+\midrule
+15 & convolution1D (int16) & 1752 & 1504 & \textbf{1.17--1.39$\times$} & Win; float/double are near 1.0$\times$ \\
+16 & convolution3D & -- & -- & \textbf{1.33--1.69$\times$} & Win; range across heavy/small layers \\
+17 & xsbench lookup & 0.342\,s & 0.058\,s & \textbf{5.90$\times$} & Win; lookup metric \\
+18 & bilateral & -- & -- & \textbf{2.81--2.98$\times$} & Win; range across filter radii \\
+19 & nbody (GFLOP/s) & 1957 & 3917 & \textbf{2.00$\times$} & Win; higher throughput is better \\
+20 & stencil3d & -- & -- & $\sim$1.0$\times$ & Neutral; streaming coefficients \\
+21 & convolutionSeparable & -- & -- & 1.006$\times$ & Neutral; measurement noise \\
+22 & laplace3d & -- & -- & $\sim$1.0$\times$ & Neutral; partial-wave tail \\
+23 & heat & -- & -- & $\sim$1.0$\times$ & Neutral; 88\% DRAM roofline \\
+24 & lavaMD & -- & -- & \textbf{1.15$\times$} & Win \\
+25 & fdtd3d & -- & -- & $\sim$1.0$\times$ & Neutral; problem too small \\
+26 & miniWeather loop & 1.185\,s & 0.711\,s & \textbf{1.67$\times$} & Win \\
+27 & srad compute stage & 0.0560\,s & 0.0530\,s & \textbf{1.06$\times$} & Win \\
+28 & hotspot & -- & -- & -- & Skipped; input data unavailable \\
+29 & hotspot3D & -- & -- & -- & Skipped; input data unavailable \\
+30 & sobel & -- & -- & -- & Skipped; input image unavailable \\
 \bottomrule
 \end{tabularx}
-\end{table}
-
-\begin{table}[t]
-\caption{Analyzed as already near-optimal; left unchanged with a reason.}
-\label{tab:nochange}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{@{}l X@{}}
-\toprule
-\textbf{Benchmark} & \textbf{Why no equivalence-preserving win exists} \\
-\midrule
-atomicReduction & vectorized v4 already 863/900\,GB/s ($\approx$96\% roofline) \\
-heat            & 88\% DRAM, naive 5-point already bandwidth-saturated \\
-convolutionSeparable & NVIDIA-tuned; conv\_cols 83.5\% DRAM, occ 96.5\% \\
-stencil3d       & 60\% DRAM streaming coefficients (no reuse); forcing occ spills \\
-laplace3d       & 61\% DRAM; limited by partial-wave tail (1.6 waves) \\
-fdtd3d          & problem too small: 0.35 waves, DRAM 32\%/SM 30\% both idle \\
-filter          & already memory-bound (66\%); fewer atomics off critical path \\
-bscan           & only single-warp ($N{=}32$) case has slack; negligible vs.\ total \\
-scan            & 78\% SM / 87\% mem already; grid-fill gives 1.01$\times$ (noise) \\
-\bottomrule
-\end{tabularx}
-\end{table}
+\end{table*}
 
 The wins cluster by \emph{mechanism}, not by application: the largest came from
 algorithm/access-pattern changes (xsbench energy-sort, blocked Floyd--Warshall,
 nbody tiling), the mid-range from removing structural waste (gaussian idle blocks,
 miniWeather host round-trips, jacobi per-iteration syncs), and the small ones from
 instruction-level cleanups (thomas CSE, convolution fast-paths). Every kernel
-already at a memory or compute roofline (Table~\ref{tab:nochange}) yielded no
-honest speedup, exactly as the profiler predicted.
+already at a memory or compute roofline yielded no honest speedup, while the
+neutral BFS and Jaccard cases showed that reducing one local cost need not
+improve the full kernel.
 
 %------------------------------------------------------------------------------
 \section{Discussion and Analysis}
@@ -318,16 +324,16 @@ from atomic contention. Larger NW tiles and a fused/queue BFS frontier likewise
 regressed. In every case the profiler explained why.
 
 \textbf{Where the agent succeeded without prompting tricks.} The agent reliably
-recognized roofline-bound kernels (Table~\ref{tab:nochange}) and chose
+recognized roofline-bound kernels (Table~\ref{tab:all-results}) and chose
 \emph{not} to change them --- an important behaviour, since a less disciplined
 agent would have ``optimized'' a bandwidth-saturated stencil and reported noise as
 a win. The profile-first prompt, plus the no-extra-work guardrail added in v3, were
 what turned confident-but-wrong behaviour into measured, correctness-gated
 results.
 
-\textbf{Limitations.} Speedups are single-GPU, single-input, and median-of-5; we
-do not report confidence intervals. Three benchmarks could not be run for lack of
-data. The agent's correctness checks reuse
+\textbf{Limitations.} Speedups are single-GPU and single-input. Repeated runs are
+not available for every benchmark, so we do not report confidence intervals.
+Three benchmarks could not be run for lack of data. The agent's correctness checks reuse
 each program's own (sometimes weak) self-test; for programs without one we relied
 on byte-identical output or a CPU reference the agent wrote.
 
@@ -335,9 +341,9 @@ on byte-identical output or a CPU reference the agent wrote.
 \section{Conclusion}
 Driven by a strict profile-classify-optimize-verify prompt, an AI coding agent
 optimized a 30-benchmark CUDA suite with results comparable to careful manual
-tuning: 14 confirmed speedups (up to 5.9$\times$), 8 correctly-diagnosed
-near-optimal kernels left untouched, and a small number of regressions that the
-agent --- and the profiler --- ultimately caught and corrected. The decisive
+tuning: 15 confirmed speedups (up to 5.9$\times$), 11 correct but neutral
+outcomes, one retained regression, and three skipped inputs. The agent and the
+profiler also caught and corrected several rejected regressions. The decisive
 prompt-engineering lesson is a single rule: \emph{remove waste, do not add work};
 without it the agent confidently produced slower code. The failures, analyzed by
 root cause, show that the hard part of GPU optimization is not generating a
@@ -400,7 +406,8 @@ For each benchmark, do NOT skip steps:
    BEFORE reporting any speedup. A fast-but-wrong kernel is a
    failure. Record rejected experiments too.
 Measure on a dedicated GPU node, single pinned device, same
-CUDA version for baseline and optimized, median of 5 runs.
+CUDA version for baseline and optimized, with 5-run medians
+where feasible and an explicitly labeled paired run otherwise.
 \end{lstlisting}
 
 \section{Representative Agent Output (excerpt)}
