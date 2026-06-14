@@ -1,0 +1,13 @@
+==2203904== NVPROF is profiling process 2203904, command: /home/r14922146/hecbench-cuda-optimization/optimized/bilateral-cuda/main 2960 1440 0.5 0.5 2
+==2203904== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/bilateral-cuda/main 2960 1440 0.5 0.5 2
+==2203904== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   38.87%  15.669ms         2  7.8347ms  7.8325ms  7.8369ms  void bilateralFilter<int=9>(float const *, float*, int, int, float, float, float)
+                   29.64%  11.950ms         3  3.9832ms  3.0500ms  5.7895ms  [CUDA memcpy DtoH]
+                   18.32%  7.3837ms         2  3.6918ms  3.6902ms  3.6934ms  void bilateralFilter<int=6>(float const *, float*, int, int, float, float, float)
+                    8.14%  3.2819ms         1  3.2819ms  3.2819ms  3.2819ms  [CUDA memcpy HtoD]
+                    5.02%  2.0246ms         2  1.0123ms  1.0115ms  1.0131ms  void bilateralFilter<int=3>(float const *, float*, int, int, float, float, float)
+Average kernel execution time (3x3) 1.411804 (ms)
+Average kernel execution time (6x6) 3.712832 (ms)
+Average kernel execution time (9x9) 7.854071 (ms)
+PASS

@@ -1,0 +1,40 @@
+==2004862== NVPROF is profiling process 2004862, command: /home/r14922146/hecbench-cuda-optimization/optimized/convolution3D-cuda/main 32 1 6 32 32 5 2
+3D convolution (FP32)
+
+========== Warmup start ==========
+input dimensions: C=1 Win=32 Hin=32
+output dimensions: M=6 Wout=28 Hout=28
+3D grid dimensions: N=32 M=6 Z=4
+Average kernel execution time of conv3d_s1 kernel: 9.709600 (us)
+PASS
+Average kernel execution time of conv3d_s2 kernel: 9.762071 (us)
+PASS
+Average kernel execution time of conv3d_s3 kernel: 9.823196 (us)
+PASS
+
+========== Warmup done ==========
+input dimensions: C=1 Win=32 Hin=32
+output dimensions: M=6 Wout=28 Hout=28
+3D grid dimensions: N=32 M=6 Z=4
+Average kernel execution time of conv3d_s1 kernel: 16.456001 (us)
+PASS
+Average kernel execution time of conv3d_s2 kernel: 19.083502 (us)
+PASS
+Average kernel execution time of conv3d_s3 kernel: 14.682501 (us)
+PASS
+==2004862== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/convolution3D-cuda/main 32 1 6 32 32 5 2
+==2004862== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   75.98%  97.413ms         6  16.236ms  2.6220us  97.210ms  cudaMalloc
+                   14.75%  18.910ms         8  2.3637ms  15.316us  6.5966ms  cudaDeviceSynchronize
+                    7.65%  9.8085ms      3006  3.2620us  2.6540us  243.12us  cudaLaunchKernel
+                    0.98%  1.2619ms        12  105.16us  21.851us  175.87us  cudaMemcpy
+                    0.32%  410.89us         6  68.482us  3.4220us  216.97us  cudaFree
+                    0.29%  377.24us       114  3.3090us      72ns  179.93us  cuDeviceGetAttribute
+                    0.01%  10.113us         1  10.113us  10.113us  10.113us  cuDeviceGetName
+                    0.01%  9.2980us         1  9.2980us  9.2980us  9.2980us  cuDeviceGetPCIBusId
+                    0.00%  1.2940us         3     431ns      84ns  1.0980us  cuDeviceGetCount
+                    0.00%     748ns         1     748ns     748ns     748ns  cuDeviceTotalMem
+                    0.00%     415ns         2     207ns      84ns     331ns  cuDeviceGet
+                    0.00%     198ns         1     198ns     198ns     198ns  cuModuleGetLoadingMode
+                    0.00%     142ns         1     142ns     142ns     142ns  cuDeviceGetUuid

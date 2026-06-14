@@ -1,0 +1,14 @@
+==3407754== NVPROF is profiling process 3407754, command: /home/r14922146/hecbench-cuda-optimization/optimized/laplace3d-cuda/main 512 512 512 10 0
+
+Grid dimensions: 512 x 512 x 512
+Result verification disabled 
+
+dimGrid  = 16 64 1 
+dimBlock = 32 8 1 
+Average kernel execution time: 0.002150 (s)
+==3407754== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/laplace3d-cuda/main 512 512 512 10 0
+==3407754== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   59.17%  193.77ms         1  193.77ms  193.77ms  193.77ms  [CUDA memcpy DtoH]
+                   33.61%  110.05ms         1  110.05ms  110.05ms  110.05ms  [CUDA memcpy HtoD]
+                    7.22%  23.643ms        11  2.1494ms  2.1015ms  2.2046ms  laplace3d(int, int, int, int, float const *, float*)

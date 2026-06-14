@@ -1,0 +1,27 @@
+==3342223== NVPROF is profiling process 3342223, command: /home/r14922146/hecbench-cuda-optimization/optimized/nbody-cuda/main 16000 3
+===============================
+ Initialize Gravity Simulation
+
+# Total Energy        : 926.559
+# Total Time (s)      : 0.00854435
+# Average Performance : 1940.97 +- 0
+===============================
+
+PASS
+==3342223== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/nbody-cuda/main 16000 3
+==3342223== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   91.49%  102.02ms         2  51.011ms  7.6610us  102.01ms  cudaMalloc
+                    7.41%  8.2686ms         3  2.7562ms  2.7538ms  2.7580ms  cudaDeviceSynchronize
+                    0.38%  428.31us       114  3.7570us      69ns  211.78us  cuDeviceGetAttribute
+                    0.28%  308.56us         2  154.28us  7.4590us  301.11us  cudaFree
+                    0.18%  205.18us         9  22.797us  3.1150us  171.89us  cudaLaunchKernel
+                    0.16%  180.39us         2  90.193us  24.775us  155.61us  cudaMemcpyAsync
+                    0.05%  59.673us         3  19.891us  11.995us  33.220us  cudaMemcpy
+                    0.02%  25.669us         1  25.669us  25.669us  25.669us  cuDeviceGetName
+                    0.01%  13.212us         1  13.212us  13.212us  13.212us  cuDeviceGetPCIBusId
+                    0.00%     724ns         3     241ns     108ns     493ns  cuDeviceGetCount
+                    0.00%     373ns         2     186ns      60ns     313ns  cuDeviceGet
+                    0.00%     370ns         1     370ns     370ns     370ns  cuDeviceTotalMem
+                    0.00%     202ns         1     202ns     202ns     202ns  cuModuleGetLoadingMode
+                    0.00%     125ns         1     125ns     125ns     125ns  cuDeviceGetUuid

@@ -1,0 +1,24 @@
+==3407822== NVPROF is profiling process 3407822, command: /home/r14922146/hecbench-cuda-optimization/optimized/laplace3d-cuda/main 512 512 512 10 0
+
+Grid dimensions: 512 x 512 x 512
+Result verification disabled 
+
+dimGrid  = 16 64 1 
+dimBlock = 32 8 1 
+Average kernel execution time: 0.002146 (s)
+==3407822== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/laplace3d-cuda/main 512 512 512 10 0
+==3407822== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   70.92%  299.95ms         2  149.97ms  109.81ms  190.14ms  cudaMemcpy
+                   23.11%  97.737ms         2  48.868ms  182.92us  97.554ms  cudaMalloc
+                    5.57%  23.551ms         2  11.776ms  2.1312ms  21.420ms  cudaDeviceSynchronize
+                    0.24%  1.0253ms         2  512.66us  422.69us  602.62us  cudaFree
+                    0.10%  432.38us       114  3.7920us      69ns  207.11us  cuDeviceGetAttribute
+                    0.05%  219.82us        11  19.983us  2.7430us  185.14us  cudaLaunchKernel
+                    0.01%  27.502us         1  27.502us  27.502us  27.502us  cuDeviceGetName
+                    0.00%  12.464us         1  12.464us  12.464us  12.464us  cuDeviceGetPCIBusId
+                    0.00%  1.3020us         3     434ns      86ns  1.1060us  cuDeviceGetCount
+                    0.00%     522ns         2     261ns      79ns     443ns  cuDeviceGet
+                    0.00%     306ns         1     306ns     306ns     306ns  cuDeviceTotalMem
+                    0.00%     187ns         1     187ns     187ns     187ns  cuModuleGetLoadingMode
+                    0.00%     134ns         1     134ns     134ns     134ns  cuDeviceGetUuid

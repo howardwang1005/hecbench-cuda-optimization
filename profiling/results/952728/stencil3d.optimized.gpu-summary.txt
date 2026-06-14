@@ -1,0 +1,10 @@
+==2259587== NVPROF is profiling process 2259587, command: /home/r14922146/hecbench-cuda-optimization/optimized/stencil3d-cuda/main 512 10
+==2259587== Grid dimension: nx=512 ny=512 nz=512
+Average kernel execution time: 0.036360 (s)
+Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/stencil3d-cuda/main 512 10
+==2259587== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   72.48%  2.17839s         2  1.08920s  217.82ms  1.96057s  [CUDA memcpy HtoD]
+                   15.47%  464.90ms         1  464.90ms  464.90ms  464.90ms  [CUDA memcpy DtoH]
+                   12.01%  360.82ms        10  36.082ms  35.817ms  36.510ms  stencil3d(double const *, double*, double const *, double const *, double const *, int, int, int)
+                    0.04%  1.2322ms         1  1.2322ms  1.2322ms  1.2322ms  [CUDA memset]

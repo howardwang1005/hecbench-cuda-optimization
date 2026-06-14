@@ -1,0 +1,13 @@
+==2270652== NVPROF is profiling process 2270652, command: /home/r14922146/src/convolutionSeparable-cuda/main 8192 8192 10
+==2270652== Average kernel execution time 0.001670 (s)
+Comparing against Host/C++ computation...
+Relative L2 norm: 0.000e+00
+
+PASS
+Profiling application: /home/r14922146/src/convolutionSeparable-cuda/main 8192 8192 10
+==2270652== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   55.76%  91.748ms         1  91.748ms  91.748ms  91.748ms  [CUDA memcpy DtoH]
+                   33.09%  54.440ms         2  27.220ms  1.4400us  54.438ms  [CUDA memcpy HtoD]
+                    6.20%  10.209ms        11  928.09us  923.77us  934.04us  conv_rows(float*, float const *, float const *, int, int, int)
+                    4.95%  8.1371ms        11  739.74us  736.31us  744.99us  conv_cols(float*, float const *, float const *, int, int, int)

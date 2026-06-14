@@ -1,0 +1,36 @@
+==3416709== NVPROF is profiling process 3416709, command: /home/r14922146/src/heat-cuda/main 4096 100
+
+ MMS heat equation
+
+--------------------
+Problem input
+
+ Grid size: 4096 x 4096
+ Cell width: 0.244081
+ Grid length: 1000x1000
+
+ Alpha: 0.1
+
+ Steps: 100
+ Total time: 0.5
+ Time step: 0.005
+ GPU device: Tesla V100-SXM2-32GB
+--------------------
+Stability
+
+ r value: 0.0083927
+--------------------
+Results
+
+Error (L2norm): 4.98288e-10
+Solve time (s): 0.0341177
+Total time (s): 0.775911
+Bandwidth (GB/s): 786.793
+--------------------
+==3416709== Profiling application: /home/r14922146/src/heat-cuda/main 4096 100
+==3416709== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   57.58%  46.875ms         1  46.875ms  46.875ms  46.875ms  [CUDA memcpy DtoH]
+                   41.79%  34.018ms       100  340.18us  339.10us  341.82us  solve(unsigned int, double, double, double, double, double, double*, double*)
+                    0.44%  360.80us         1  360.80us  360.80us  360.80us  initial_value(unsigned int, double, double, double*)
+                    0.19%  151.26us         1  151.26us  151.26us  151.26us  zero(unsigned int, double*)

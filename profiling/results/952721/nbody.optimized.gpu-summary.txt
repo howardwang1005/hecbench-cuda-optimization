@@ -1,0 +1,18 @@
+==3342073== NVPROF is profiling process 3342073, command: /home/r14922146/hecbench-cuda-optimization/optimized/nbody-cuda/main 16000 3
+==3342073== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/nbody-cuda/main 16000 3
+===============================
+ Initialize Gravity Simulation
+
+# Total Energy        : 926.559
+# Total Time (s)      : 0.00911544
+# Average Performance : 1938.35 +- 0
+===============================
+
+PASS
+==3342073== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   81.96%  6.8968ms         3  2.2989ms  2.2839ms  2.3072ms  accelerate_particles(Particle*, int, float, float)
+                   16.87%  1.4192ms         3  473.05us  471.74us  473.89us  accumulate_energy(float*, int)
+                    0.84%  71.072us         2  35.536us  8.5440us  62.528us  [CUDA memcpy HtoD]
+                    0.26%  22.176us         3  7.3920us  7.1360us  7.8080us  update_particles(Particle*, float*, int, float)
+                    0.06%  5.1840us         3  1.7280us  1.5040us  2.0480us  [CUDA memcpy DtoH]

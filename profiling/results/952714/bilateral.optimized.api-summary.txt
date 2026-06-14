@@ -1,0 +1,21 @@
+==2204107== NVPROF is profiling process 2204107, command: /home/r14922146/hecbench-cuda-optimization/optimized/bilateral-cuda/main 2960 1440 0.5 0.5 2
+==2204107== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/bilateral-cuda/main 2960 1440 0.5 0.5 2
+==2204107== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   67.28%  88.088ms         2  44.044ms  153.35us  87.934ms  cudaMalloc
+                   19.21%  25.149ms         6  4.1915ms  17.068us  15.655ms  cudaDeviceSynchronize
+                   12.56%  16.439ms         4  4.1097ms  3.3234ms  6.0967ms  cudaMemcpy
+                    0.36%  473.90us         2  236.95us  152.27us  321.64us  cudaFree
+                    0.29%  381.35us       114  3.3450us      70ns  183.32us  cuDeviceGetAttribute
+                    0.28%  364.38us         6  60.730us  4.8160us  267.24us  cudaLaunchKernel
+                    0.01%  12.342us         1  12.342us  12.342us  12.342us  cuDeviceGetName
+                    0.01%  8.1160us         1  8.1160us  8.1160us  8.1160us  cuDeviceGetPCIBusId
+                    0.00%  1.3600us         3     453ns      86ns  1.1800us  cuDeviceGetCount
+                    0.00%     474ns         2     237ns      89ns     385ns  cuDeviceGet
+                    0.00%     335ns         1     335ns     335ns     335ns  cuDeviceTotalMem
+                    0.00%     316ns         1     316ns     316ns     316ns  cuDeviceGetUuid
+                    0.00%     236ns         1     236ns     236ns     236ns  cuModuleGetLoadingMode
+Average kernel execution time (3x3) 1.147863 (ms)
+Average kernel execution time (6x6) 3.713552 (ms)
+Average kernel execution time (9x9) 7.851817 (ms)
+PASS

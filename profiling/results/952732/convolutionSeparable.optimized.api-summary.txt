@@ -1,0 +1,22 @@
+==2271703== NVPROF is profiling process 2271703, command: /home/r14922146/hecbench-cuda-optimization/optimized/convolutionSeparable-cuda/main 8192 8192 10
+Average kernel execution time 0.001577 (s)
+Comparing against Host/C++ computation...
+Relative L2 norm: 0.000e+00
+
+PASS
+==2271703== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/convolutionSeparable-cuda/main 8192 8192 10
+==2271703== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   57.23%  148.41ms         3  49.470ms  23.653us  93.854ms  cudaMemcpy
+                   35.43%  91.871ms         4  22.968ms  155.21us  91.284ms  cudaMalloc
+                    6.66%  17.278ms         2  8.6388ms  1.5720ms  15.706ms  cudaDeviceSynchronize
+                    0.42%  1.0901ms         4  272.52us  258.72us  299.49us  cudaFree
+                    0.15%  387.54us       114  3.3990us      70ns  186.28us  cuDeviceGetAttribute
+                    0.10%  250.24us        22  11.374us  2.5890us  184.11us  cudaLaunchKernel
+                    0.01%  13.768us         1  13.768us  13.768us  13.768us  cuDeviceGetName
+                    0.00%  8.5600us         1  8.5600us  8.5600us  8.5600us  cuDeviceGetPCIBusId
+                    0.00%     969ns         3     323ns      87ns     794ns  cuDeviceGetCount
+                    0.00%     388ns         2     194ns      77ns     311ns  cuDeviceGet
+                    0.00%     237ns         1     237ns     237ns     237ns  cuModuleGetLoadingMode
+                    0.00%     194ns         1     194ns     194ns     194ns  cuDeviceTotalMem
+                    0.00%     123ns         1     123ns     123ns     123ns  cuDeviceGetUuid

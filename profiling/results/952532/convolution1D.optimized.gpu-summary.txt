@@ -1,0 +1,399 @@
+==4013738== NVPROF is profiling process 4013738, command: /home/r14922146/hecbench-cuda-optimization/optimized/convolution1D-cuda/main 134217728 2
+
+---------------------
+Mask width: 3
+1D convolution (FP64)
+Average kernel execution time of conv1d kernel (block size 64): 3548.315186 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 2697.186523 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 2702.928711 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 2707.142090 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 2709.097168 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3074.471680 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 2858.724121 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 2872.991211 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 2912.388672 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 2932.438232 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3006.153564 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2734.792236 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2725.551514 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2729.868652 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2740.300049 (us)
+PASS
+1D convolution (FP32)
+Average kernel execution time of conv1d kernel (block size 64): 2986.075684 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 1539.710571 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 1467.644531 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 1469.312012 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 1504.126587 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 2995.620117 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 1837.572144 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 1783.825073 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 1774.338623 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 1837.486572 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 2988.510254 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 1804.066040 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 1700.050537 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 1698.173096 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 1731.148560 (us)
+PASS
+1D convolution (INT16)
+Average kernel execution time of conv1d kernel (block size 64): 2983.705566 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 1511.113037 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 1205.332031 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 1183.950073 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 1241.942505 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 2991.121094 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 1533.514038 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 1452.506592 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 1412.182007 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 1443.818115 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 2988.765625 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 1560.050049 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 1515.846558 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 1512.754517 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 1583.516602 (us)
+PASS
+
+---------------------
+Mask width: 5
+1D convolution (FP64)
+Average kernel execution time of conv1d kernel (block size 64): 2988.706055 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 2695.857178 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 2691.840576 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 2689.777588 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 2697.207031 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3013.046143 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 2927.794678 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 2988.979736 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 3014.090576 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 3081.021240 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3018.214111 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2797.960205 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2764.350098 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2753.474609 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2772.792725 (us)
+PASS
+1D convolution (FP32)
+Average kernel execution time of conv1d kernel (block size 64): 3561.771729 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 1787.519043 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 1490.067627 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 1507.627563 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 1677.172607 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3543.145264 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 2052.244141 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 2059.580566 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 2070.056152 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 2147.293701 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3544.207275 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2178.378662 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2093.546143 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2084.523682 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2164.960205 (us)
+PASS
+1D convolution (INT16)
+Average kernel execution time of conv1d kernel (block size 64): 3542.195557 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 1786.853027 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 1475.654053 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 1502.737549 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 1743.876099 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3542.689697 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 1866.050049 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 1820.502075 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 1786.113037 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 1836.778076 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3540.303223 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2111.700195 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2066.715088 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2074.821533 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2259.868164 (us)
+PASS
+
+---------------------
+Mask width: 7
+1D convolution (FP64)
+Average kernel execution time of conv1d kernel (block size 64): 3556.478760 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 2754.342041 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 2754.786133 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 2755.717041 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 2748.420654 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3023.205566 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 3077.273682 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 3117.232178 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 3131.150146 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 3181.011230 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3047.170166 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2906.054199 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2855.797119 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2844.883057 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2874.850586 (us)
+PASS
+1D convolution (FP32)
+Average kernel execution time of conv1d kernel (block size 64): 2989.500244 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 1642.040527 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 1603.680054 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 1636.100098 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 1760.075073 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3001.965576 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 2021.611084 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 2222.986572 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 2170.153564 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 2248.727539 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3543.469727 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2531.216553 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2434.096191 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2470.854736 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2603.868652 (us)
+PASS
+1D convolution (INT16)
+Average kernel execution time of conv1d kernel (block size 64): 3542.468262 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 1920.871582 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 1886.501587 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 1910.299561 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 2132.812500 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3545.410156 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 2104.845215 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 2061.901123 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 2037.702148 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 2092.963135 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3541.509766 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2588.213135 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2533.096191 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2535.857666 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2843.621582 (us)
+PASS
+
+---------------------
+Mask width: 9
+1D convolution (FP64)
+Average kernel execution time of conv1d kernel (block size 64): 3097.093262 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 2778.987061 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 2774.457520 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 2766.790039 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 2748.773193 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3016.881592 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 3051.078613 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 3126.093750 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 3167.009766 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 3216.398682 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3099.079102 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2984.774170 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2924.438232 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2904.103027 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2983.508545 (us)
+PASS
+1D convolution (FP32)
+Average kernel execution time of conv1d kernel (block size 64): 2990.347656 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 1672.193604 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 1629.681519 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 1832.231567 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 1999.373535 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3545.815674 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 2109.677002 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 2125.531006 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 2117.483643 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 2274.197510 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3546.866699 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2662.018555 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2602.867676 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2643.987549 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 2828.435059 (us)
+PASS
+1D convolution (INT16)
+Average kernel execution time of conv1d kernel (block size 64): 3545.038574 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 128): 2100.089600 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 256): 2086.539551 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 512): 2125.417480 (us)
+PASS
+Average kernel execution time of conv1d kernel (block size 1024): 2355.400146 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 64): 3546.250732 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 128): 2056.162598 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 256): 2014.412598 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 512): 1987.102051 (us)
+PASS
+Average kernel execution time of conv1d-tiled kernel (block size 1024): 2048.044189 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 64): 3541.476074 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 128): 2884.073242 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 256): 2808.468750 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 512): 2813.302246 (us)
+PASS
+Average kernel execution time of conv1d-tiled-caching kernel (block size 1024): 3093.290527 (us)
+PASS
+==4013738== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/convolution1D-cuda/main 134217728 2
+==4013738== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   90.78%  23.6945s       180  131.64ms  52.833ms  390.72ms  [CUDA memcpy DtoH]
+                    5.83%  1.52189s        24  63.412ms  1.3120us  217.98ms  [CUDA memcpy HtoD]
+                    0.46%  120.85ms        40  3.0212ms  2.8383ms  3.2012ms  void conv1d_tiled<double>(double const *, double*, int, int)
+                    0.44%  114.24ms        40  2.8559ms  2.7062ms  3.0845ms  void conv1d_tiled_caching<double>(double const *, double*, int, int)
+                    0.43%  113.01ms        40  2.8253ms  2.6706ms  3.5431ms  void conv1d<double>(double const *, double*, int, int)
+                    0.38%  100.08ms        40  2.5021ms  1.4922ms  3.5255ms  void conv1d_tiled_caching<short>(short const *, short*, int, int)
+                    0.38%  99.011ms        40  2.4753ms  1.6814ms  3.5266ms  void conv1d_tiled_caching<float>(float const *, float*, int, int)
+                    0.35%  91.181ms        40  2.2795ms  1.7529ms  3.5279ms  void conv1d_tiled<float>(float const *, float*, int, int)
+                    0.33%  85.660ms        40  2.1415ms  1.3958ms  3.5278ms  void conv1d_tiled<short>(short const *, short*, int, int)
+                    0.32%  82.839ms        40  2.0710ms  1.1643ms  3.5308ms  void conv1d<short>(short const *, short*, int, int)
+                    0.29%  76.769ms        40  1.9192ms  1.4437ms  3.5489ms  void conv1d<float>(float const *, float*, int, int)

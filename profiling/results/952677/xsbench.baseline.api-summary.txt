@@ -1,0 +1,60 @@
+==2092257== NVPROF is profiling process 2092257, command: /home/r14922146/src/xsbench-cuda/main -s large -m event -r 1
+==2092257== Profiling application: /home/r14922146/src/xsbench-cuda/main -s large -m event -r 1
+                                  INPUT SUMMARY
+================================================================================
+Simulation Method:            Event Based
+Grid Type:                    Unionized Grid
+Materials:                    12
+H-M Benchmark Size:           large
+Total Nuclides:               355
+Gridpoints (per Nuclide):     11,303
+Unionized Energy Gridpoints:  4,012,565
+Total XS Lookups:             17,000,000
+Est. Memory Usage (MB):       5,649
+Binary File Mode:             Off
+================================================================================
+                         INITIALIZATION - DO NOT PROFILE
+================================================================================
+Intializing nuclide grids...
+Intializing unionized grid...
+Intializing material data...
+Intialization complete. Allocated 5648 MB of data.
+
+================================================================================
+                                   SIMULATION
+================================================================================
+Beginning event based simulation...
+Allocating an additional 64.8 MB of memory for verification arrays...
+Running on: Tesla V100-SXM2-32GB
+Initializing device buffers and JIT compiling kernel...
+Beginning event based simulation on the host for verification...
+
+Simulation complete.
+================================================================================
+                                     RESULTS
+================================================================================
+Total Time Statistics (Device Init / JIT Compilation + Simulation Kernel)
+Runtime:               53.931 seconds
+Lookups:               17,000,000
+Lookups/s:             315,220
+Simulation Kernel Only Statistics
+Average kernel execution time: 0.363 seconds
+Lookups/s:             46,846,397
+Verification checksum: 50951281 (Valid)
+================================================================================
+==2092257== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   72.76%  1.22938s         7  175.63ms  11.505us  1.15927s  cudaMemcpy
+                   21.47%  362.76ms         2  181.38ms  78.604us  362.68ms  cudaDeviceSynchronize
+                    5.50%  92.965ms         7  13.281ms  4.2610us  91.930ms  cudaMalloc
+                    0.21%  3.5606ms         7  508.65us  4.8600us  2.6943ms  cudaFree
+                    0.02%  405.54us       114  3.5570us      70ns  200.06us  cuDeviceGetAttribute
+                    0.02%  341.04us         1  341.04us  341.04us  341.04us  cudaGetDeviceProperties
+                    0.01%  193.99us         1  193.99us  193.99us  193.99us  cudaLaunchKernel
+                    0.00%  20.953us         1  20.953us  20.953us  20.953us  cuDeviceGetName
+                    0.00%  7.0580us         1  7.0580us  7.0580us  7.0580us  cuDeviceGetPCIBusId
+                    0.00%  1.4040us         3     468ns     112ns  1.1800us  cuDeviceGetCount
+                    0.00%     628ns         1     628ns     628ns     628ns  cuDeviceTotalMem
+                    0.00%     443ns         2     221ns      86ns     357ns  cuDeviceGet
+                    0.00%     210ns         1     210ns     210ns     210ns  cuModuleGetLoadingMode
+                    0.00%     155ns         1     155ns     155ns     155ns  cuDeviceGetUuid

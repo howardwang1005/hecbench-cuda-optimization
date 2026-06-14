@@ -1,0 +1,46 @@
+==3417322== NVPROF is profiling process 3417322, command: /home/r14922146/hecbench-cuda-optimization/optimized/heat-cuda/main 4096 100
+
+ MMS heat equation
+
+--------------------
+Problem input
+
+ Grid size: 4096 x 4096
+ Cell width: 0.244081
+ Grid length: 1000x1000
+
+ Alpha: 0.1
+
+ Steps: 100
+ Total time: 0.5
+ Time step: 0.005
+ GPU device: Tesla V100-SXM2-32GB
+--------------------
+Stability
+
+ r value: 0.0083927
+--------------------
+Results
+
+Error (L2norm): 4.98288e-10
+Solve time (s): 0.0341402
+Total time (s): 0.772032
+Bandwidth (GB/s): 786.274
+--------------------
+==3417322== Profiling application: /home/r14922146/hecbench-cuda-optimization/optimized/heat-cuda/main 4096 100
+==3417322== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   54.23%  99.545ms         2  49.773ms  181.90us  99.363ms  cudaMalloc
+                   25.79%  47.338ms         1  47.338ms  47.338ms  47.338ms  cudaMemcpy
+                   18.71%  34.339ms         2  17.170ms  509.70us  33.829ms  cudaDeviceSynchronize
+                    0.37%  672.34us       102  6.5910us  2.5630us  380.44us  cudaLaunchKernel
+                    0.32%  587.60us         2  293.80us  210.19us  377.41us  cudaFree
+                    0.25%  454.57us       114  3.9870us      69ns  217.94us  cuDeviceGetAttribute
+                    0.19%  349.14us         1  349.14us  349.14us  349.14us  cudaGetDeviceProperties
+                    0.14%  252.32us         1  252.32us  252.32us  252.32us  cuDeviceGetName
+                    0.01%  11.704us         1  11.704us  11.704us  11.704us  cuDeviceGetPCIBusId
+                    0.00%  1.6610us         3     553ns      88ns  1.4760us  cuDeviceGetCount
+                    0.00%     402ns         2     201ns      93ns     309ns  cuDeviceGet
+                    0.00%     256ns         1     256ns     256ns     256ns  cuDeviceTotalMem
+                    0.00%     216ns         1     216ns     216ns     216ns  cuModuleGetLoadingMode
+                    0.00%     132ns         1     132ns     132ns     132ns  cuDeviceGetUuid

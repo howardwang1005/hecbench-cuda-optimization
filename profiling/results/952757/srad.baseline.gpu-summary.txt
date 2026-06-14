@@ -1,0 +1,27 @@
+==3473102== NVPROF is profiling process 3473102, command: /home/r14922146/src/srad-cuda/main 1000 0.5 502 458
+Time spent in different stages of the application:
+ 0.000000064000 s,  0.000015729066 % : SETUP VARIABLES
+ 0.000010205000 s,  0.002508048710 % : READ COMMAND LINE PARAMETERS
+ 0.026524256000 s,  6.518777663618 % : READ IMAGE FROM FILE
+ 0.000561191000 s,  0.137922034677 % : RESIZE IMAGE
+ 0.295188218000 s, 72.547420823470 % : GPU DRIVER INIT, CPU/GPU SETUP, MEMORY ALLOCATION
+ 0.000195994000 s,  0.048168789707 % : COPY DATA TO CPU->GPU
+ 0.001080884000 s,  0.265645244721 % : EXTRACT IMAGE
+ 0.061922778000 s, 15.218553994334 % : COMPUTE (1000 iterations)
+ 0.000016355000 s,  0.004019513636 % : COMPRESS IMAGE
+ 0.000294564000 s,  0.072394008854 % : COPY DATA TO GPU->CPU
+ 0.020089884000 s,  4.937423582545 % : SAVE IMAGE INTO FILE
+ 0.001005631000 s,  0.247150566660 % : FREE MEMORY
+Total time:
+0.406890024000 s
+==3473102== Profiling application: /home/r14922146/src/srad-cuda/main 1000 0.5 502 458
+==3473102== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   39.13%  13.335ms      3000  4.4440us  2.1440us  8.4810us  reduce(long, int, int, float*, float*)
+                   23.80%  8.1091ms      1000  8.1090us  7.6800us  9.1510us  srad(float, int, int, long, int const *, int const *, int const *, int const *, float*, float*, float*, float*, float, float*, float const *)
+                   17.55%  5.9802ms      1000  5.9800us  5.7270us  6.5280us  srad2(float, int, int, long, int const *, int const *, int const *, int const *, float const *, float const *, float const *, float const *, float const *, float*)
+                    9.63%  3.2804ms      1000  3.2800us  3.2310us  3.7120us  prepare(long, float const *, float*, float*)
+                    9.61%  3.2750ms      2001  1.6360us  1.5030us  86.527us  [CUDA memcpy DtoH]
+                    0.27%  90.593us         5  18.118us  1.2160us  85.376us  [CUDA memcpy HtoD]
+                    0.01%  4.0960us         1  4.0960us  4.0960us  4.0960us  extract(long, float*)
+                    0.01%  3.5520us         1  3.5520us  3.5520us  3.5520us  compress(long, float*)

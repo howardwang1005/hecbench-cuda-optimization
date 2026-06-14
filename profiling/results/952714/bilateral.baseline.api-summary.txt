@@ -1,0 +1,21 @@
+==2202871== NVPROF is profiling process 2202871, command: /home/r14922146/src/bilateral-cuda/main 2960 1440 0.5 0.5 2
+==2202871== Profiling application: /home/r14922146/src/bilateral-cuda/main 2960 1440 0.5 0.5 2
+==2202871== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+      API calls:   66.01%  88.207ms         2  44.103ms  150.40us  88.056ms  cudaMalloc
+                   20.78%  27.771ms         6  4.6285ms  14.673us  17.299ms  cudaDeviceSynchronize
+                   12.17%  16.258ms         4  4.0646ms  3.3032ms  6.0076ms  cudaMemcpy
+                    0.40%  532.56us       114  4.6710us      69ns  313.04us  cuDeviceGetAttribute
+                    0.36%  481.03us         2  240.52us  150.80us  330.23us  cudaFree
+                    0.27%  360.59us         6  60.097us  4.2230us  266.78us  cudaLaunchKernel
+                    0.01%  13.796us         1  13.796us  13.796us  13.796us  cuDeviceGetName
+                    0.01%  8.8020us         1  8.8020us  8.8020us  8.8020us  cuDeviceGetPCIBusId
+                    0.00%     983ns         3     327ns      85ns     809ns  cuDeviceGetCount
+                    0.00%     325ns         2     162ns      81ns     244ns  cuDeviceGet
+                    0.00%     227ns         1     227ns     227ns     227ns  cuModuleGetLoadingMode
+                    0.00%     194ns         1     194ns     194ns     194ns  cuDeviceTotalMem
+                    0.00%     131ns         1     131ns     131ns     131ns  cuDeviceGetUuid
+Average kernel execution time (3x3) 1.253366 (ms)
+Average kernel execution time (6x6) 4.099277 (ms)
+Average kernel execution time (9x9) 8.670541 (ms)
+PASS
